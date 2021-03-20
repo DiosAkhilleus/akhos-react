@@ -1,4 +1,3 @@
-const convert = require('xml-js');
 
 function arraysEqual(a, b) {
     if (a === b) return true;

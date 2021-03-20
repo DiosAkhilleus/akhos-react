@@ -1,5 +1,8 @@
 import React from 'react';
 import Overview from './components/Overview';
+import { getGreekMorph } from './modules/greek';
+import { getLatinMorph } from './modules/latin';
+import { parseSingleMorph, parseMultiMorph } from './modules/helpers';
 
 class App extends React.Component {
   constructor(props) {

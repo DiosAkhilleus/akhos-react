@@ -238,7 +238,7 @@ async function getWikiGreek (lemma) { // fetches the wiktionary definition for
         let def;
         let defArr = entryOut.other[0].definitions;
         //console.log(entryOut.other);
-        if(entryOut.other[0].definitions.length = 1){
+        if(entryOut.other[0].definitions.length === 1){
             def = entryOut.other[0].definitions[0].definition;
         } else {
             for(let i = 0; i < defArr.length; i++ ){
