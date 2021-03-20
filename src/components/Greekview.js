@@ -6,14 +6,12 @@ import getGreek from '../modules/javascript/greek';
 
 class GreekView extends React.Component {
 
-
 constructor(props) {
     super(props);
     this.state = {
       list: [],
       value: '',
       information: [],
-      item: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,11 +28,12 @@ constructor(props) {
     const conc = this.state.list.concat(item);
     const info = await getGreek(item);
     
-    this.setState({information: info})
-    this.setState({ list: conc });
-    this.setState({value: ''});
-    this.setState({item: item});
-    //console.log(this.state.information);
+        this.setState({information: info})
+        this.setState({ list: conc });
+        this.setState({value: ''});
+        this.setState({item: item});
+    
+    console.log(this.state.information);
   }
   
   render () {
@@ -50,7 +49,9 @@ constructor(props) {
         <br />
         <Overview items={this.state.list} title={this.state.information} name={this.state.item} />
         <br />
-        {/* <div>{this.state.information}</div> */}
+        {/* <div id="tif" name="tif" onChange={this.handleSubmit}>  
+      { Object.entries(this.state.information).map((t,k) => <option key={k} value={t[0]}>{t[1]}</option>) }          
+   </div> */}
         <div id='greek' style={{display:'none'}}></div>
         
       </div>

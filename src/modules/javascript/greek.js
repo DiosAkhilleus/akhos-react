@@ -33,7 +33,7 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
         setUndefined();
     }
 
-    console.log(dataOut);
+    //console.log(dataOut);
 
     let type;
     let returnArr = [];
@@ -313,12 +313,12 @@ async function getPerseusGreek(lemma) {
             return "Can't Find Entry";
         } else {
             dataAsJson = JSON.parse(convert.xml2json(textData1, {compact: true, spaces: 4}));
-            console.log(dataAsJson);
+            //console.log(dataAsJson);
             return "Middle Liddell Dict. Entry";
         } 
     } else {
         dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
-        console.log(dataAsJson);
+        //console.log(dataAsJson);
         //need to do some pretty serious parsing here. This could take a while. 
         return "Middle Liddell Dict. Entry";
     }
