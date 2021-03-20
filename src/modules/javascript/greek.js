@@ -1,6 +1,27 @@
 import {  setUndefined  } from './dom';
 import {  greekToBetaCode  } from 'beta-code-js';
+import {  parseSingleMorph, parseMultiMorph  } from './helpers';
 const convert = require('xml-js');
+
+async function getGreek (lemma) {
+    
+    let lemmaArr = lemma.split(' ');
+    
+    if(lemmaArr.length === 1){
+        const morph = await getGreekMorph(lemmaArr[0]);
+        //parseSingleMorph(morph);
+        return morph;
+    } else {
+        let multiMorph = [];
+        for(let i = 0; i < lemmaArr.length; i++){
+            const subMorph = await getGreekMorph(lemmaArr[i]);
+            multiMorph.push(subMorph);
+        }
+        //parseMultiMorph(multiMorph);
+        return multiMorph;
+    }
+    
+}
 
 async function getGreekMorph (lemma) { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     // fetches the given greek string from the morphology service
@@ -12,7 +33,7 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
         setUndefined();
     }
 
-    //console.log(dataOut);
+    console.log(dataOut);
 
     let type;
     let returnArr = [];
@@ -32,7 +53,7 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
             const longDict = await getPerseusGreek(fixedHead);
 
             if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
-                subArr = [fixedHead, type, shortDict, longDict];
+                subArr = [fixedHead, type, ['uninflected'], shortDict, longDict];
             } else {
                 subArr = [fixedHead, type, inflect, shortDict, longDict];
             }
@@ -55,7 +76,7 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
         const longDict = await getPerseusGreek(fixedHead);
 
         if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
-            return [fixedHead, type, shortDict, longDict];
+            return [fixedHead, type, ['uninflected'], shortDict, longDict];
         } else {
             return [fixedHead, type, inflect, shortDict, longDict];
         }   
@@ -227,6 +248,8 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
             return [`${gender} ${nCase} ${number}`];
         }
     }
+
+    //Fix Relative Pronouns
 };
 
 async function getWikiGreek (lemma) { // fetches the wiktionary definition for 
@@ -251,14 +274,26 @@ async function getWikiGreek (lemma) { // fetches the wiktionary definition for
         let titles = document.querySelectorAll('#greek a');
         
         let sumDef;
-        for(let i = 0; i < titles.length; i++){
-            if(i === 0){
-                sumDef = `${titles[i].textContent}`;
-            } else {
-                sumDef = sumDef + `, ${titles[i].textContent}`;
+
+        if (titles.length < 8) {
+            for(let i = 0; i < titles.length; i++){
+                if(i === 0){
+                    sumDef = `${titles[i].textContent}`;
+                } else {
+                    sumDef = sumDef + `, ${titles[i].textContent}`;
+                }
             }
-            
+        } else {
+            for(let i = 0; i < titles.length/4; i++){
+                if(i === 0){
+                    sumDef = `${titles[i].textContent}`;
+                } else {
+                    sumDef = sumDef + `, ${titles[i].textContent}`;
+                }
+            }
         }
+
+        
             
         return sumDef;
     }
@@ -278,15 +313,15 @@ async function getPerseusGreek(lemma) {
             return "Can't Find Entry";
         } else {
             dataAsJson = JSON.parse(convert.xml2json(textData1, {compact: true, spaces: 4}));
-            //console.log(dataAsJson);
+            console.log(dataAsJson);
             return "Middle Liddell Dict. Entry";
         } 
     } else {
         dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
-        //console.log(dataAsJson);
+        console.log(dataAsJson);
         //need to do some pretty serious parsing here. This could take a while. 
         return "Middle Liddell Dict. Entry";
     }
 }
 
-export {  getGreekMorph  };
+export default getGreek;

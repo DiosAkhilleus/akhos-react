@@ -1,6 +1,25 @@
 import { setUndefined } from "./dom";
 const convert = require('xml-js');
 
+
+async function getLatin () {
+    let formData = document.getElementById('latin-title');
+    let lemma = formData.value;
+    let lemmaArr = lemma.split(' ');
+    
+    if(lemmaArr.length === 1){
+        const morph = await getLatinMorph(lemmaArr[0]);
+        console.log(morph); 
+    } else {
+        let allMorph = [];
+        for(let i = 0; i < lemmaArr.length; i++){
+            const subMorph = await getLatinMorph(lemmaArr[i]);
+            allMorph.push(subMorph);
+        }
+        console.log(allMorph);
+    }
+}
+
 async function getLatinMorph (lemma) {
     const latinData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
     const dataOut = await latinData.json();
@@ -63,6 +82,7 @@ async function getLatinMorph (lemma) {
         }  
     }
 }
+
 const getLatinInflections = (inflections, type) => {
     //console.log(inflections, type);
     let returnArr = [];
@@ -159,6 +179,7 @@ const getLatinInflections = (inflections, type) => {
         } 
     }
 }
+
 async function getWikiLatin (lemma) {
     const latinDef = await fetch (`https://en.wiktionary.org/api/rest_v1/page/definition/${lemma}?redirect=true`);
     const defOut = await latinDef.json();
@@ -175,6 +196,7 @@ async function getWikiLatin (lemma) {
 
     return sumDef;
 }
+
 async function getPerseusLatin(lemma) {
     let dataAsJson = {};
     const data = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3D${lemma}`);
@@ -199,4 +221,4 @@ async function getPerseusLatin(lemma) {
 
 }
 
-export {  getLatinMorph  }
+export {  getLatin  }
