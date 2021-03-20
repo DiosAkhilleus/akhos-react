@@ -36,9 +36,9 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
     //console.log(dataOut);
 
     let type;
-    let returnArr = [];
+    let returnArr = {};
     if(Array.isArray(body)){ // if multiple possible definitions, returns morphology array for each
-        let subArr = [];
+        let subObj = {};
         for(let i = 0; i < body.length; i++){
             if(dataOut.RDF.Annotation.Body[i].rest.entry.infl[0] !== undefined){
                 type = (dataOut.RDF.Annotation.Body[i].rest.entry.infl[0].pofs.$);
@@ -53,12 +53,30 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
             const longDict = await getPerseusGreek(fixedHead);
 
             if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
-                subArr = [fixedHead, type, ['uninflected'], shortDict, longDict];
+                subObj = {
+                            headword: fixedHead, 
+                            type: type, 
+                            inflections: [
+                                {
+                                    dialect: "n/a",
+                                    inflections: "uninflected"
+                                }
+                            ], 
+                            shortDef: shortDict,
+                            longDef: longDict
+                        };
             } else {
-                subArr = [fixedHead, type, inflect, shortDict, longDict];
+                subObj = {
+                    headword: fixedHead, 
+                    type: type, 
+                    inflections: inflect,
+                    shortDef: shortDict,
+                    longDef: longDict
+                };
             }
-            returnArr.push(subArr);
+            returnArr[i] = subObj;
         }
+        console.log(returnArr);
         return returnArr; //full array of word possibilities
     } else { //if there is only one headword possible
         
@@ -76,9 +94,26 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
         const longDict = await getPerseusGreek(fixedHead);
 
         if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
-            return [fixedHead, type, ['uninflected'], shortDict, longDict];
+            return {
+                    headword: fixedHead, 
+                    type: type, 
+                    inflections: [
+                        {
+                            dialect: 'n/a',
+                            inflection: 'uninflected'
+                        }
+                    ], 
+                    shortDef: shortDict,
+                    longDef: longDict
+                };
         } else {
-            return [fixedHead, type, inflect, shortDict, longDict];
+            return {   
+                    headword: fixedHead,
+                    type: type,
+                    inflections: inflect,
+                    shortDef: shortDict,
+                    longDef: longDict
+                };
         }   
     }
 };

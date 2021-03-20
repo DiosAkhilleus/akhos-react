@@ -28,12 +28,13 @@ constructor(props) {
     const conc = this.state.list.concat(item);
     const info = await getGreek(item);
     
+    
         this.setState({information: info})
         this.setState({ list: conc });
         this.setState({value: ''});
         this.setState({item: item});
-    
-    console.log(this.state.information);
+        // console.log(this.state.information);
+        // console.log(Object.keys(this.state.information))
   }
   
   render () {
@@ -48,10 +49,15 @@ constructor(props) {
         </form>
         <br />
         <Overview items={this.state.list} title={this.state.information} name={this.state.item} />
+        {/* <div>
+        {this.state.information.map(function(object) {
+        return (
+          <Overview key={object.id} data={object} />
+        );
+      })}
+        </div> */}
+        {/* <div>{this.state.information}</div> */}
         <br />
-        {/* <div id="tif" name="tif" onChange={this.handleSubmit}>  
-      { Object.entries(this.state.information).map((t,k) => <option key={k} value={t[0]}>{t[1]}</option>) }          
-   </div> */}
         <div id='greek' style={{display:'none'}}></div>
         
       </div>
