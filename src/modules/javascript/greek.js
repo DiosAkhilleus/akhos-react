@@ -1,15 +1,14 @@
-import {  setUndefined  } from './dom';
-import {  greekToBetaCode  } from 'beta-code-js';
-import {  parseSingleMorph, parseMultiMorph  } from './helpers';
+import {  greekToBetaCode  } from 'beta-code-js'; 
 const convert = require('xml-js');
 
-async function getGreek (lemma) {
+const getGreek = async (lemma) => {
     
     let lemmaArr = lemma.split(' ');
     
     if(lemmaArr.length === 1){
         const morph = await getGreekMorph(lemmaArr[0]);
         //parseSingleMorph(morph);
+        //console.log(morph);
         return morph;
     } else {
         let multiMorph = [];
@@ -18,25 +17,26 @@ async function getGreek (lemma) {
             multiMorph.push(subMorph);
         }
         //parseMultiMorph(multiMorph);
+        //console.log(multiMorph);
         return multiMorph;
     }
     
-}
+};
 
-async function getGreekMorph (lemma) { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
+const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     // fetches the given greek string from the morphology service
     const greekData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
     const dataOut = await greekData.json();
     const body = dataOut.RDF.Annotation.Body;
 
     if(body === undefined){
-        setUndefined();
+        console.log('undefined');
     }
 
-    //console.log(dataOut);
+    console.log(dataOut);
 
     let type;
-    let returnArr = {};
+    let returnObj = {};
     if(Array.isArray(body)){ // if multiple possible definitions, returns morphology array for each
         let subObj = {};
         for(let i = 0; i < body.length; i++){
@@ -51,6 +51,8 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
             const inflect = getGreekInflections(inflections, type);
             const shortDict = await getWikiGreek(fixedHead);
             const longDict = await getPerseusGreek(fixedHead);
+
+            console.log(shortDict);
 
             if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
                 subObj = {
@@ -74,10 +76,10 @@ async function getGreekMorph (lemma) { //returns a full array of relevant inform
                     longDef: longDict
                 };
             }
-            returnArr[i] = subObj;
+            returnObj[i] = subObj;
         }
-        console.log(returnArr);
-        return returnArr; //full array of word possibilities
+        //console.log(returnObj);
+        return returnObj; //full array of word possibilities
     } else { //if there is only one headword possible
         
         if(dataOut.RDF.Annotation.Body.rest.entry.infl[0] !== undefined){
@@ -132,9 +134,15 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let mood = inflectArr[i].mood.$;
                     if(inflectArr[i].dial){
                         let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = [`${dialect}`, `${person} person ${number} ${tense} ${voice} ${mood}`];
+                        combinedArr[i] = {
+                            dialect: dialect,
+                            inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                        };
                     }else {
-                        combinedArr[i] = ['attic', `${person} person ${number} ${tense} ${voice} ${mood}`];
+                        combinedArr[i] = {
+                            dialect: 'Attic',
+                            inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                        }
                     }
                 }
             return combinedArr;
@@ -146,9 +154,15 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
             let mood = inflectArr.mood.$;
             if(inflectArr.dial){
                 let dialect = inflectArr.dial.$;
-                return [`${dialect}`, `${person} person ${number} ${tense} ${voice} ${mood}`];
+                return [{
+                    dialect: dialect,
+                    inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                }];
             }else {
-                return ['attic', `${person} person ${number} ${tense} ${voice} ${mood}`];
+                return [{
+                    dialect: 'Attic',
+                    inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                }];
             }
         }
     } else if (type === 'verb participle') {
@@ -162,9 +176,15 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let mood = inflectArr[i].mood.$;
                     if(inflectArr[i].dial){
                         let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = [`${dialect}`, `${gender} ${number} ${tense} ${voice} ${mood}`];
-                    }else {
-                        combinedArr[i] = ['attic', `${gender} ${number} ${tense} ${voice} ${mood}`];
+                        combinedArr[i] = {
+                            dialect: dialect, 
+                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                        };
+                    } else {
+                        combinedArr[i] = {
+                            dialect: 'Attic',
+                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                        };
                     }
                 }
             return combinedArr;
@@ -176,9 +196,15 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
             let mood = inflectArr.mood.$;
             if(inflectArr.dial){
                 let dialect = inflectArr.dial.$;
-                return [`${dialect}`, `${gender} ${number} ${tense} ${voice} ${mood}`];
-            }else {
-                return ['attic', `${gender} ${number} ${tense} ${voice} ${mood}`];
+                return [{
+                    dialect: dialect, 
+                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                }];
+            } else {
+                return [{
+                    dialect: 'Attic',
+                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                }];
             }
         }
     } else if (type === 'noun') {
@@ -192,9 +218,17 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let declension = inflectArr[i].decl.$;
                     if(inflectArr[i].dial){
                         let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = [`${dialect}`, `${gender} ${nCase} ${number}`, `${declension} declension`];
-                    }else {
-                        combinedArr[i] = ['attic', `${gender} ${nCase} ${number}`, `${declension} declension`];
+                        combinedArr[i] = {
+                            dialect: dialect, 
+                            declension: declension,
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
+                    } else {
+                        combinedArr[i] = {
+                            dialect: 'Attic', 
+                            declension: declension,
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
                     }
                 }
             return combinedArr;
@@ -205,9 +239,17 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
         let declension = inflectArr.decl.$;
         if(inflectArr.dial){
             let dialect = inflectArr.dial.$;
-            return [`${dialect}`, `${gender} ${nCase} ${number}`, `${declension} declension`];
-        }else {
-            return ['attic', `${gender} ${nCase} ${number}`, `${declension} declension`];
+            return [{
+                dialect: dialect, 
+                declension: declension,
+                inflection: `${gender} ${nCase} ${number}`
+            }];
+        } else {
+            return [{
+                dialect: 'Attic', 
+                declension: declension,
+                inflection: `${gender} ${nCase} ${number}`
+            }];
         }
     } else if (type === 'adjective') {
         if(Array.isArray(inflectArr)){
@@ -220,9 +262,17 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let declension = inflectArr[i].decl.$;
                     if(inflectArr[i].dial){
                         let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = [`${dialect}`, `${gender} ${nCase} ${number}`, `${declension} declension`];
-                    }else {
-                        combinedArr[i] = ['attic', `${gender} ${nCase} ${number}`, `${declension} declension`];
+                        combinedArr[i] = {
+                            dialect: dialect, 
+                            declension: declension,
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
+                    } else {
+                        combinedArr[i] = {
+                            dialect: 'Attic',
+                            declension: declension,
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
                     }
                 }
             return combinedArr;
@@ -233,9 +283,17 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
         let declension = inflectArr.decl.$;
         if(inflectArr.dial){
             let dialect = inflectArr.dial.$;
-            return [`${dialect}`, `${gender} ${nCase} ${number}`, `${declension} declension`];
-        }else {
-            return ['attic', `${gender} ${nCase} ${number}`, `${declension} declension`];
+            return [{
+                dialect: dialect, 
+                declension: declension,
+                inflection: `${gender} ${nCase} ${number}`
+            }]; 
+        } else {
+            return [{
+                dialect: 'Attic',
+                declension: declension,
+                inflection: `${gender} ${nCase} ${number}`
+            }];
         }
     } else if (type === 'pronoun') {
         if(Array.isArray(inflectArr)){
@@ -246,8 +304,9 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let nCase = inflectArr[i].case.$;
                     let number = inflectArr[i].num.$;
 
-                        combinedArr[i] = [`${person} person ${gender} ${nCase} ${number}`];
-                    
+                        combinedArr[i] = {
+                            inflection: `${person} person ${gender} ${nCase} ${number}`
+                        };
                 }
             return combinedArr;
         }
@@ -255,7 +314,9 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
         let gender = inflectArr.gend.$;
         let nCase = inflectArr.case.$;
         let number = inflectArr.num.$;
-        return [`${person} person ${gender} ${nCase} ${number}`];
+        return [{
+            inflection: `${person} person ${gender} ${nCase} ${number}`
+        }];
     } else if (type === 'article') {
         if(Array.isArray(inflectArr)){
             let combinedArr = [];
@@ -266,9 +327,15 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                     let number = inflectArr[i].num.$;
                     if(inflectArr[i].dial){
                         let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = [`${dialect}`, `${gender} ${nCase} ${number}`];
-                    }else {
-                        combinedArr[i] = [`${gender} ${nCase} ${number}`];
+                        combinedArr[i] = {
+                            dialect: dialect, 
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
+                    } else {
+                        combinedArr[i] = {
+                            dialect: 'Attic', 
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
                     }
                 }
             return combinedArr;
@@ -278,39 +345,53 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
         let number = inflectArr.num.$;
         if(inflectArr.dial){
             let dialect = inflectArr.dial.$;
-            return [`${dialect}`, `${gender} ${nCase} ${number}`];
-        }else {
-            return [`${gender} ${nCase} ${number}`];
+            return [{
+                dialect: dialect, 
+                inflection: `${gender} ${nCase} ${number}`
+            }];
+        } else {
+            return [{
+                dialect: 'Attic', 
+                inflection: `${gender} ${nCase} ${number}`
+            }];
         }
     }
 
     //Fix Relative Pronouns
 };
 
-async function getWikiGreek (lemma) { // fetches the wiktionary definition for 
+const getWikiGreek = async (lemma) => { // fetches the wiktionary definition for 
     const dictEntry = await fetch(`https://en.wiktionary.org/api/rest_v1/page/definition/${lemma}`, {mode: 'cors'});
     const entryOut = await dictEntry.json();
     
     
-    if(entryOut.other !== undefined){
+    if (entryOut === undefined){
+        return "Hello";
+    } else {
         let def;
         let defArr = entryOut.other[0].definitions;
-        //console.log(entryOut.other);
+        
         if(entryOut.other[0].definitions.length === 1){
             def = entryOut.other[0].definitions[0].definition;
+            
         } else {
             for(let i = 0; i < defArr.length; i++ ){
                 def = def + defArr[i].definition; 
             }
         }
+        let fixedDef = def.replace(/undefined/g, '');
         
-        document.getElementById('greek').innerHTML = def;
+        
+        document.getElementById('greek').innerHTML = fixedDef;
     
         let titles = document.querySelectorAll('#greek a');
+        if (titles.length === 0){
+            return document.getElementById('greek').innerHTML;
+        }
         
         let sumDef;
 
-        if (titles.length < 8) {
+        if (titles.length < 8 && titles.length > 0) {
             for(let i = 0; i < titles.length; i++){
                 if(i === 0){
                     sumDef = `${titles[i].textContent}`;
@@ -327,16 +408,15 @@ async function getWikiGreek (lemma) { // fetches the wiktionary definition for
                 }
             }
         }
-
-        
+        //sumDef.replace(/[^a-zA-Z\s,]/g, '')
             
         return sumDef;
     }
-    return "Definition Not Found";
 };
 
-async function getPerseusGreek(lemma) {
+const getPerseusGreek = async (lemma) => {
     const beta = greekToBetaCode(lemma);
+    
     let dataAsJson = {};
     const data = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}`);
     const textData = await data.text();
@@ -357,6 +437,6 @@ async function getPerseusGreek(lemma) {
         //need to do some pretty serious parsing here. This could take a while. 
         return "Middle Liddell Dict. Entry";
     }
-}
+};
 
 export default getGreek;

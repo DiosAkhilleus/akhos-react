@@ -1,5 +1,6 @@
 body{
-    background-color: crimson;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    background-color: lightgoldenrodyellow;
+}
+#greek, #latin{
+    display:none;
 }
