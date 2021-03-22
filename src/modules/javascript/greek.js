@@ -33,10 +33,10 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
         console.log('undefined');
     }
 
-    console.log(dataOut);
+    //console.log(dataOut);
 
     let type;
-    let returnObj = {};
+    let returnArr = [];
     if(Array.isArray(body)){ // if multiple possible definitions, returns morphology array for each
         let subObj = {};
         for(let i = 0; i < body.length; i++){
@@ -52,7 +52,7 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
             const shortDict = await getWikiGreek(fixedHead);
             const longDict = await getPerseusGreek(fixedHead);
 
-            console.log(shortDict);
+            //console.log(shortDict);
 
             if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
                 subObj = {
@@ -76,10 +76,10 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
                     longDef: longDict
                 };
             }
-            returnObj[i] = subObj;
+            returnArr[i] = subObj;
         }
         //console.log(returnObj);
-        return returnObj; //full array of word possibilities
+        return returnArr; //full array of word possibilities
     } else { //if there is only one headword possible
         
         if(dataOut.RDF.Annotation.Body.rest.entry.infl[0] !== undefined){
@@ -96,7 +96,7 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
         const longDict = await getPerseusGreek(fixedHead);
 
         if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
-            return {
+            return [{
                     headword: fixedHead, 
                     type: type, 
                     inflections: [
@@ -107,15 +107,15 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
                     ], 
                     shortDef: shortDict,
                     longDef: longDict
-                };
+                }];
         } else {
-            return {   
+            return [{   
                     headword: fixedHead,
                     type: type,
                     inflections: inflect,
                     shortDef: shortDict,
                     longDef: longDict
-                };
+                }];
         }   
     }
 };

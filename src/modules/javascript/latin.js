@@ -28,7 +28,7 @@ const getLatinMorph = async (lemma) => {
     }
     //console.log(dataOut);
     if(Array.isArray(body)) {
-        let retObj = {};
+        let retArr = [];
         for(let i = 0; i < body.length; i++){
             const inflections = body[i].rest.entry.infl;
             let headWord = body[i].rest.entry.dict.hdwd.$;
@@ -64,19 +64,19 @@ const getLatinMorph = async (lemma) => {
             
             //console.log(setArr);
             
-            for(let i = 0; i < retObj.length; i++) {
-                    if(JSON.stringify(subObj) === JSON.stringify(retObj[i])){
+            for(let i = 0; i < retArr.length; i++) {
+                    if(JSON.stringify(subObj) === JSON.stringify(retArr[i])){
                         check = true;
                     }
             }
             if(check === false) {
                 
-                retObj[i] = (subObj);
+                retArr[i] = (subObj);
             }
         }
         
 
-    return retObj;
+    return retArr;
     } else {
         const inflections = body.rest.entry.infl;
         let headWord = body.rest.entry.dict.hdwd.$;
@@ -101,13 +101,13 @@ const getLatinMorph = async (lemma) => {
                 longDef: longDict
             };
         } else {
-            return {   
+            return [{   
                 headword: fixedHead,
                 type: type,
                 inflections: inflect,
                 shortDef: shortDict,
                 longDef: longDict
-            };
+            }];
         }  
     }
 }
@@ -171,9 +171,9 @@ const getLatinInflections = (inflections, type) => {
                 let latVoice = inflections.voice.$;
                 let latMood = inflections.mood.$;
 
-                return {
+                return [{
                     inflection: `${latTense} ${latVoice} ${latMood}`
-                };
+                }];
             } else {
                 let person = inflections.pers.$;
                 let number = inflections.num.$;
@@ -181,9 +181,9 @@ const getLatinInflections = (inflections, type) => {
                 let latVoice = inflections.voice.$;
                 let latMood = inflections.mood.$;
 
-                return {
+                return [{
                     inflection: `${person} person ${number} ${latTense} ${latVoice} ${latMood}`
-                };
+                }];
             }
         }
     } else if(type === 'adjective') {
@@ -215,20 +215,20 @@ const getLatinInflections = (inflections, type) => {
             if(inflections.gend.$ === 'adverbial') {
                 let declension = inflections.decl.$;
                 let gender = inflections.gend.$;
-                return {
+                return [{
                     declension: declension,
                     inflection: gender
-                };
+                }];
             } else {
                 let gender = inflections.gend.$;
                 let latCase = inflections.case.$;
                 let number = inflections.num.$;
                 let declension = inflections.decl.$;
                 returnArr = [`${declension} declension`, `${gender} ${latCase} ${number}`];
-                return {
+                return [{
                     declension: declension,
                     inflection: `${gender} ${latCase} ${number}`
-                };
+                }];
             }
         } 
     } else if(type === 'verb participle') {
@@ -265,12 +265,12 @@ const getPerseusLatin = async (lemma) => {
             return "Can't Find Entry";
         } else {
             dataAsJson = JSON.parse(convert.xml2json(textData1));
-            console.log(dataAsJson);
+            //console.log(dataAsJson);
             return "Elementary Lewis Dict. Definition";
         }
     } else {
         dataAsJson = JSON.parse(convert.xml2json(textData));
-        console.log(dataAsJson);
+        //console.log(dataAsJson);
         //need to do some pretty serious parsing here. This could take a while.
         return "Elementary Lewis Dict. Definition";
     }
