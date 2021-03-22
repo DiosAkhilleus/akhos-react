@@ -17,20 +17,27 @@ const Translation = (props) => {
 //     console.log(head, type, short, long);
 // }
 
-const format = (arr) => {
-    console.log(arr);
-
-    for(const item of arr) {
-        console.log(item);
-        return (Object.keys(item).map((val, i) => {return (<div key={i}><br/><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div></div>)})
-        )}
+const format = (item, i) => {
+   
+    
+        return(
+            
+            <div>
+            ––––––––––––––––––––<br/>
+            <h4>Possibility {i + 1}</h4>
+            {Object.keys(item).map((val, i) => {return (<div key={Math.random()}><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div><br/></div>)})}
+            </div>
+        )
+    
 }
     return (
         <div>
-            <br/>
+            <h2>{props.provided}</h2> 
             <div>{props.head}</div> <br/>
             <div>{props.type}</div>
-            <div>{format(props.inflections)}</div><br/>
+            <div>{props.inflections.map((item, i) => format(item, i))}</div>
+            <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div><br/>
+            
             <div>{props.short}</div> <br/>
             <div>{props.long}</div>
         </div>    

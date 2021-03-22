@@ -4,3 +4,12 @@ body{
 #greek, #latin{
     display:none;
 }
+
+h4 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    margin-top: 10px;
+}

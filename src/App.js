@@ -15,6 +15,7 @@ function App () {
   const [latin, setLatin] = useState ('');
   const [ret, setRet] = useState(false);
   const [lang, setLang] = useState('');
+  const [provided, setProvided] = useState('');
 
   const grek = async (lemma) => {
     
@@ -34,7 +35,7 @@ function App () {
     setInflections (infl);
     setShorterDef (short);
     setLongerDef (long);
-    console.log(Object.keys(grekWord).length);
+    
     setRet(true);
     setLang('gr');
   } else {
@@ -56,14 +57,14 @@ function App () {
       setInflections (infl);
       setShorterDef (short);
       setLongerDef (long);
-      console.log(head, part, infl, short, long);
-      console.log(Object.keys(latWord).length);
+      // console.log(head, part, infl, short, long);
+      // console.log(Object.keys(latWord).length);
       setRet(true);
       setLang('la');
   } else {
     console.log("More than 1 def");
   }
-    console.log(lemma);
+    //console.log(lemma);
   }
   const handleChangeGreek = (event) => {
     
@@ -75,10 +76,12 @@ function App () {
 
   const handleGreek = (e) => {
     e.preventDefault();
+    setProvided(greek);
     grek(greek);
     //setGreek('');
   }
   const handleLatin = (e) => {
+    setProvided(latin);
     e.preventDefault();
     lat(latin);
     //setLatin('');
@@ -103,6 +106,7 @@ function App () {
         </form>
         <br/>
           <Translation 
+          provided={provided}
           head={(ret) ? `From: ${headWord}` : headWord } 
           type={(ret) ? `Word Type: ${type}` : type} 
           inflections={(ret) ? inflections: inflections} 
