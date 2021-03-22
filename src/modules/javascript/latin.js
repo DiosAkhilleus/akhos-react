@@ -16,9 +16,9 @@ const getLatin = async (lemma) => {
         }
         return allMorph;
     }
-}
+};
 
-const getLatinMorph = async (lemma) => {
+const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
     const latinData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
     const dataOut = await latinData.json();
     const body = dataOut.RDF.Annotation.Body;
@@ -110,7 +110,7 @@ const getLatinMorph = async (lemma) => {
             }];
         }  
     }
-}
+};
 
 const getLatinInflections = (inflections, type) => {
     //console.log(inflections, type);
@@ -234,7 +234,7 @@ const getLatinInflections = (inflections, type) => {
     } else if(type === 'verb participle') {
         console.log('verb participle');
     }
-}
+};
 
 const getWikiLatin = async (lemma) => {
     const latinDef = await fetch (`https://en.wiktionary.org/api/rest_v1/page/definition/${lemma}?redirect=true`);
@@ -251,7 +251,7 @@ const getWikiLatin = async (lemma) => {
     }
 
     return sumDef;
-}
+};
 
 const getPerseusLatin = async (lemma) => {
     let dataAsJson = {};
@@ -275,7 +275,7 @@ const getPerseusLatin = async (lemma) => {
         return "Elementary Lewis Dict. Definition";
     }
 
-}
+};
 
 
 export default getLatin

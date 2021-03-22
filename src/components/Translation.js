@@ -1,18 +1,17 @@
-import React, {useState} from 'react';
+
 
 const Translation = (props) => {
- 
 
-const format = (item, i) => {
+    const format = (item, i) => { // maps through the inflection array and returns a div containing each inflection 
 
-        return(
-            <div>
-            ––––––––––––––––––––<br/>
-            <h4>Possibility {i + 1}</h4>
-            {Object.keys(item).map((val, i) => {return (<div key={Math.random()}><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div><br/></div>)})}
-            </div>
-        )
-}
+            return(
+                <div>
+                ––––––––––––––––––––<br/>
+                <h4>Possibility {i + 1}</h4>
+                {Object.keys(item).map((val, i) => {return (<div key={Math.random()}><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div><br/></div>)})}
+                </div>
+            )
+    }
     return (
         <div>
             <h2>{props.provided}</h2> 

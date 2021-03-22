@@ -13,29 +13,29 @@ function App () {
   const [provided, setProvided] = useState('');
   const [lemm, setLemm] = useState([]);
 
-  const grek = async (lemma) => {
+  const grek = async (lemma) => { // retrieves a Mult component with multiple nested Translation components, depending on if the input word has multiple root headwords
     
   const grekWord = await getGreek(lemma);
   
     setLemm (grekWord);
   
 }
-  const lat = async (lemma) => {
+  const lat = async (lemma) => { // same as above grek
 
     const latWord = await getLatin(lemma);
 
-    console.log(latWord);
     setLemm(latWord);
   }
-  const handleChangeGreek = (event) => {
+  const handleChangeGreek = (event) => { // as input is typed into greek form, it updates the state with the current value
     
     setGreek (event.target.value);
   }
-  const handleChangeLatin = (event) => {
+
+  const handleChangeLatin = (event) => { // same as handleChangeGreek but for Latin
     setLatin (event.target.value);
   }
 
-  const handleGreek = (e) => {
+  const handleGreek = (e) => { // handles the submission of the Greek input form
     setRet(true);
     e.preventDefault();
     setProvided(greek);
@@ -45,7 +45,7 @@ function App () {
 
     //setGreek('');
   }
-  const handleLatin = (e) => {
+  const handleLatin = (e) => { // same as handleGreek but for Latin
     setRet(true);
     setProvided(latin);
     e.preventDefault();
@@ -74,13 +74,6 @@ function App () {
         </form>
         <br/>
           <div>{(ret) ? (<Mult input={lemm} provided={provided} lang={lang}/>) : ''}</div>
-          {/* <Translation 
-          provided={provided}
-          head={(ret) ? `From: ${headWord}` : headWord } 
-          type={(ret) ? `Word Type: ${type}` : type} 
-          inflections={(ret) ? inflections: inflections} 
-          short={(ret) ? `Wiki Definition: ${shorterDef}` : shorterDef} 
-          long={(ret) ? ((lang === 'la') ? `Lewis & Short Entry: ${longerDef}` : `Liddell Scott Entry: ${longerDef}`) : longerDef} /> */}
         <div id='greek'></div>
         <div id='latin'></div>
       </div>

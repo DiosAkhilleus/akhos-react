@@ -1,9 +1,9 @@
 import Translation from './Translation';
 
-const Mult = (props) => {
+const Mult = (props) => { // maps through the input array and provides a Translation component from the information inside input
     return (
         <div>
-        {console.log(props.input, props.provided, props.lang)}
+        {/* {console.log(props.input, props.provided, props.lang)} */}
         {props.input.map((item) => {return ( 
             <Translation key={Math.random()}
           provided={props.provided}
