@@ -364,7 +364,7 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
 const getWikiGreek = async (lemma) => { // fetches the wiktionary definition for the input word
     const dictEntry = await fetch(`https://en.wiktionary.org/api/rest_v1/page/definition/${lemma}`, {mode: 'cors'});
     const entryOut = await dictEntry.json();
-    console.log(entryOut.other)
+    //console.log(entryOut.other)
     
     if (entryOut.other === undefined){
         return "Not Found";
@@ -433,7 +433,7 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
         let defArray = [];
         for(let i = 0; i < lower.length; i++){
             const flatter = flatten(lower[i]);
-            console.log(flatter);
+            //console.log(flatter);
             let regex1 = /^_text.0/;
             let regex2 = /_text$/
             let regex3 = /^foreign./;
@@ -472,7 +472,7 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
             
             const flatter = flatten(lower[i]);
             
-            console.log(flatter);
+            //console.log(flatter);
             let regex1 = /^_text.0/;
             let regex2 = /_text$/
             let regex3 = /^foreign./;
