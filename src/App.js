@@ -16,15 +16,15 @@ function App () {
 
   const grek = async (lemma) => { // retrieves a Mult component with multiple nested Translation components, depending on if the input word has multiple root headwords
     
-  const grekWord = await getGreek(lemma);
-  
+    const grekWord = await getGreek(lemma);
+    setProvided(greek);
     setLemm (grekWord);
   
 }
   const lat = async (lemma) => { // same as above grek
 
     const latWord = await getLatin(lemma);
-
+    setProvided(latin);
     setLemm(latWord);
   }
   const handleChangeGreek = (event) => { // as input is typed into greek form, it updates the state with the current value
@@ -39,33 +39,26 @@ function App () {
   const handleGreek = (e) => { // handles the submission of the Greek input form
     setRet(true);
     e.preventDefault();
-    setProvided(greek);
     setLang('gr');
-    
     grek(greek);
-
-    //setGreek('');
   }
   const handleLatin = (e) => { // same as handleGreek but for Latin
     setRet(true);
-    setProvided(latin);
     e.preventDefault();
     setLang('la');
-    
     lat(latin);
-    //setLatin('');
   }
 
     return (
       <div>
         <div id="form-container">
           <form className="lang-form" onSubmit={handleGreek}>
-            <input className="lang-input" type="text" value={greek} onChange={handleChangeGreek} name="gr" placeholder="μῆνις"/>
+            <input className="lang-input" type="text" value={greek} onChange={handleChangeGreek} name="gr" placeholder="ἄνδρα"/>
             &nbsp;
             <Button variant="outlined" color="primary" type="submit" classes={{label: 'sub-button'}}>Submit Greek</Button>
           </form>
           <form className="lang-form" onSubmit={handleLatin}>
-                <input className="lang-input" type="text" value={latin} onChange={handleChangeLatin} placeholder="cogito"/>
+                <input className="lang-input" type="text" value={latin} onChange={handleChangeLatin} placeholder="aequitas"/>
                 &nbsp;
               <Button variant="outlined" color="secondary" type="submit" classes={{label: 'sub-button'}}>Submit Latin</Button>
             </form>

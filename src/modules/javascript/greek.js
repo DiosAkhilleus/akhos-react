@@ -480,7 +480,9 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
 
             const asArray = Object.entries(flatter);
             
-            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
+            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key) && value !== ", " && value !== ":"))));
+            // (    && value !== "; ") 
+            
             const allowedObj = Object.fromEntries(allowedArr);
             
             for (const [key, value] of Object.entries(allowedObj)) {

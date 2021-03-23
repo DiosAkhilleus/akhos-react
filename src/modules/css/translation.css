@@ -30,6 +30,8 @@
 .type {
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size:32px;
+    font-style: italic;
+    color:rgb(20, 85, 73);
 }
 
 .trans-container {

@@ -1,6 +1,7 @@
 import Translation from './Translation';
 
-const Mult = (props) => { // maps through the input array and provides a Translation component from the information inside input
+const Mult = (props) => { 
+    // maps through the input array and provides a Translation component from the information inside input
     return (
         <>
         {/* {console.log(props.input, props.provided, props.lang)} */}
