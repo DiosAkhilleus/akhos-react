@@ -433,7 +433,7 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
         let defArray = [];
         for(let i = 0; i < lower.length; i++){
             const flatter = flatten(lower[i]);
-            //console.log(flatter);
+            console.log(flatter);
             let regex1 = /^_text.0/;
             let regex2 = /_text$/
             let regex3 = /^foreign./;
@@ -465,19 +465,24 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
         dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
         
         const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
+        
         let defArray = [];
+        
         for(let i = 0; i < lower.length; i++){
+            
             const flatter = flatten(lower[i]);
-            //console.log(flatter);
+            
+            console.log(flatter);
             let regex1 = /^_text.0/;
             let regex2 = /_text$/
             let regex3 = /^foreign./;
             let regex4 = /^usg./;
 
             const asArray = Object.entries(flatter);
+            
             const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
             const allowedObj = Object.fromEntries(allowedArr);
-    
+            
             for (const [key, value] of Object.entries(allowedObj)) {
                 allowedObj[key] = value.replace(/^\s/g, '');
                 allowedObj[key] = value.replace(/,\s$/, ':');
@@ -494,7 +499,7 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
             
             joined += endStr;
         }
-        console.log(joined);
+        // console.log(joined);
         return joined;
     }
 };

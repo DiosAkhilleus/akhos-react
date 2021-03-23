@@ -1,4 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+
 .infl {
-    color: cadetblue;
+    color: rgb(21, 39, 40);
+    
+}
+
+.possibility {
+    color:rgb(152, 19, 46);
+    font-size:28px;
     font-family:fantasy
+}
+
+.inflect, .short, .long {
+    font-size:24px;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+.title {
+    font-size:50px;
+    margin-bottom: 10px;
+    font-family: 'GFS Didot', serif;
+}
+
+.head {
+    font-family: 'GFS Didot', serif;
+    font-size: 30px; 
+}
+
+.type {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size:32px;
+}
+
+.trans-container {
+    border-bottom: 3px;
+    border-bottom-style:solid;
+    border-bottom-color:darkslategray
 }

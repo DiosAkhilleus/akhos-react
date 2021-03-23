@@ -71,7 +71,7 @@ function App () {
             </form>
         </div>
         <br/>
-          <div>{(ret) ? (<Mult input={lemm} provided={provided} lang={lang}/>) : ''}</div>
+          <div id="translation">{(ret) ? (<Mult input={lemm} provided={provided} lang={lang}/>) : ''}</div>
         <div id='greek'></div>
         <div id='latin'></div>
       </div>
