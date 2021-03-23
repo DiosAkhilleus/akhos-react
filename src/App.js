@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import getGreek from './modules/javascript/greek';
 import getLatin from './modules/javascript/latin';
 import Mult from './components/Mult';
+import {Button} from '@material-ui/core';
 import './App.css';
 
 function App () {
@@ -57,21 +58,18 @@ function App () {
 
     return (
       <div>
-        <form onSubmit={handleGreek}>
-          <label>
-            Greek: 
-            <input type="text" value={greek} onChange={handleChangeGreek} placeholder="μῆνις"/>
-          </label>
-          <input type="submit" value="Submit"/>
-        </form>
-        <br/>
-        <form onSubmit={handleLatin}>
-          <label>
-            Latin:
-            <input type="text" value={latin} onChange={handleChangeLatin} placeholder="cogito"/>
-          </label>
-          <input type="submit" value="Submit"/>
-        </form>
+        <div id="form-container">
+          <form className="lang-form" onSubmit={handleGreek}>
+            <input className="lang-input" type="text" value={greek} onChange={handleChangeGreek} name="gr" placeholder="μῆνις"/>
+            &nbsp;
+            <Button variant="outlined" color="primary" type="submit" classes={{label: 'sub-button'}}>Submit Greek</Button>
+          </form>
+          <form className="lang-form" onSubmit={handleLatin}>
+                <input className="lang-input" type="text" value={latin} onChange={handleChangeLatin} placeholder="cogito"/>
+                &nbsp;
+              <Button variant="outlined" color="secondary" type="submit" classes={{label: 'sub-button'}}>Submit Latin</Button>
+            </form>
+        </div>
         <br/>
           <div>{(ret) ? (<Mult input={lemm} provided={provided} lang={lang}/>) : ''}</div>
         <div id='greek'></div>

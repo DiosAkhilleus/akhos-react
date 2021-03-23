@@ -1,5 +1,6 @@
 import {  greekToBetaCode  } from 'beta-code-js'; 
 const convert = require('xml-js');
+const flatten = require('flat');
 
 const getGreek = async (lemma) => {
     
@@ -428,14 +429,73 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
             return "Can't Find Entry";
         } else {
             dataAsJson = JSON.parse(convert.xml2json(textData1, {compact: true, spaces: 4}));
-            //console.log(dataAsJson);
-            return "Middle Liddell Dict. Entry";
+            const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
+        let defArray = [];
+        for(let i = 0; i < lower.length; i++){
+            const flatter = flatten(lower[i]);
+            //console.log(flatter);
+            let regex1 = /^_text.0/;
+            let regex2 = /_text$/
+            let regex3 = /^foreign./;
+            let regex4 = /^usg./;
+
+            const asArray = Object.entries(flatter);
+            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
+            const allowedObj = Object.fromEntries(allowedArr);
+    
+            for (const [key, value] of Object.entries(allowedObj)) {
+                allowedObj[key] = value.replace(/^\s/g, '');
+                allowedObj[key] = value.replace(/,\s$/, ':');
+            }
+    
+            defArray.push(allowedObj);
+        }
+        
+        let joined = '';
+        for(let i = 0; i < defArray.length; i++) {
+            let subArr = Object.entries(defArray[i]);
+            const endArr = subArr.map(([key, value]) => (value) )
+            const endStr = endArr.join(', ');
+            
+            joined += endStr;
+        }
+        return joined;
         } 
     } else {
         dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
-        //console.log(dataAsJson);
-        //need to do some pretty serious parsing here. This could take a while. 
-        return "Middle Liddell Dict. Entry";
+        
+        const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
+        let defArray = [];
+        for(let i = 0; i < lower.length; i++){
+            const flatter = flatten(lower[i]);
+            //console.log(flatter);
+            let regex1 = /^_text.0/;
+            let regex2 = /_text$/
+            let regex3 = /^foreign./;
+            let regex4 = /^usg./;
+
+            const asArray = Object.entries(flatter);
+            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
+            const allowedObj = Object.fromEntries(allowedArr);
+    
+            for (const [key, value] of Object.entries(allowedObj)) {
+                allowedObj[key] = value.replace(/^\s/g, '');
+                allowedObj[key] = value.replace(/,\s$/, ':');
+            }
+    
+            defArray.push(allowedObj);
+        }
+        
+        let joined = '';
+        for(let i = 0; i < defArray.length; i++) {
+            let subArr = Object.entries(defArray[i]);
+            const endArr = subArr.map(([key, value]) => (value) )
+            const endStr = endArr.join(', ');
+            
+            joined += endStr;
+        }
+        console.log(joined);
+        return joined;
     }
 };
 

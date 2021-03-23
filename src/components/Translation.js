@@ -1,12 +1,11 @@
-
+import '../modules/css/translation.css';
 
 const Translation = (props) => {
 
     const format = (item, i) => { // maps through the inflection array and returns a div containing each inflection 
 
             return(
-                <div>
-                ––––––––––––––––––––<br/>
+                <div className="infl">
                 <h4>Possibility {i + 1}</h4>
                 {Object.keys(item).map((val, i) => {return (<div key={Math.random()}><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div><br/></div>)})}
                 </div>
@@ -17,6 +16,7 @@ const Translation = (props) => {
             <h2>{props.provided}</h2> 
             <div>{props.head}</div> <br/>
             <div>{props.type}</div>
+            <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div>
             <div>{props.inflections.map((item, i) => format(item, i))}</div>
             <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div><br/>
             

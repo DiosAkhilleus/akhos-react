@@ -1,5 +1,5 @@
 body{
-    background-color: lightgoldenrodyellow;
+    background-color:rgb(252, 240, 226);
 }
 #greek, #latin{
     display:none;
@@ -17,4 +17,67 @@ h2 {
 input {
     margin-left: 8px;
     margin-right: 8px;
+}
+
+.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedSecondary {
+    align-self:flex-end;
+}
+
+.lang-input {
+    
+    border-radius:4px;
+    font-size:20px;
+    vertical-align: middle;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid #DDDDDD;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+
+}
+
+.lang-input:focus{
+    outline-color:cadetblue;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid rgba(81, 203, 238, 1);
+}
+
+#greek-label, #latin-label {
+    display:inline-block;
+    font-size:20px;
+    text-align:left;
+    height:100%;
+}
+
+#form-container {
+    
+    width:30vw;
+    display:flex;
+}
+
+.lang-form {
+    display:flexbox;
+    min-width:100%;
+    padding:5px;
+}
+
+#latin-cell {
+    width: 100%;
+}
+
+table {
+    max-width: 100%;
+}
+
+#gr {
+    width: 100px;
+} 
+
+#lab {
+    width: 20px;
 }

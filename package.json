@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "beta-code-js": "^2.0.2",
     "buffer": "^4.9.2",
+    "flat": "^5.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
