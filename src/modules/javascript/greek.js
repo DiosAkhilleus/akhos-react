@@ -28,7 +28,7 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
     const greekData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
     const dataOut = await greekData.json();
     const body = dataOut.RDF.Annotation.Body;
-
+    console.log(dataOut);
     if(body === undefined){
         console.log('undefined');
     }
@@ -122,49 +122,85 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
 };
 
 const getGreekInflections = (inflectArr, type) => { // returns an array in which each element is an object of the dialect type and inflection pattern
-    
+    console.log(type);
     if (type === 'verb') { //all other if statements contain similar code that will change what is returned in the object, depending on word type.
         if(Array.isArray(inflectArr)){ // if multiple inflection possibilities, returns array of all possible inflections. 
             let combinedArr = [];
                 for(let i = 0; i < inflectArr.length; i++){
-                    
-                    let person = inflectArr[i].pers.$;
-                    let number = inflectArr[i].num.$;
-                    let tense = inflectArr[i].tense.$;
-                    let voice = inflectArr[i].voice.$;
-                    let mood = inflectArr[i].mood.$;
-                    if(inflectArr[i].dial){
-                        let dialect = inflectArr[i].dial.$;
-                        combinedArr[i] = {
-                            dialect: dialect,
-                            inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
-                        };
-                    }else {
-                        combinedArr[i] = {
-                            dialect: 'Attic',
-                            inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                    if (inflectArr[i].mood.$ === 'infinitive') {
+                        let tense = inflectArr[i].tense.$;
+                        let voice = inflectArr[i].voice.$;
+                        let mood = inflectArr[i].mood.$;
+                        if(inflectArr[i].dial){
+                            let dialect = inflectArr[i].dial.$;
+                            combinedArr[i] = {
+                                dialect: dialect,
+                                inflection: `${tense} ${voice} ${mood}`
+                            };
+                        }else {
+                            combinedArr[i] = {
+                                dialect: 'Attic',
+                                inflection: `${tense} ${voice} ${mood}`
+                            }
+                        }
+                    } else {
+                        let person = inflectArr[i].pers.$;
+                        let number = inflectArr[i].num.$;
+                        let tense = inflectArr[i].tense.$;
+                        let voice = inflectArr[i].voice.$;
+                        let mood = inflectArr[i].mood.$;
+                        if(inflectArr[i].dial){
+                            let dialect = inflectArr[i].dial.$;
+                            combinedArr[i] = {
+                                dialect: dialect,
+                                inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                            };
+                        }else {
+                            combinedArr[i] = {
+                                dialect: 'Attic',
+                                inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                            }
                         }
                     }
                 }
             return combinedArr;
         } else {
-            let person = inflectArr.pers.$;
-            let number = inflectArr.num.$;
-            let tense = inflectArr.tense.$;
-            let voice = inflectArr.voice.$;
-            let mood = inflectArr.mood.$;
-            if(inflectArr.dial){
-                let dialect = inflectArr.dial.$;
-                return [{
-                    dialect: dialect,
-                    inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
-                }];
-            }else {
-                return [{
-                    dialect: 'Attic',
-                    inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
-                }];
+            if (inflectArr.mood.$ === 'infinitive') {
+                let tense = inflectArr.tense.$;
+                let voice = inflectArr.voice.$;
+                let mood = inflectArr.mood.$;
+                if(inflectArr.dial){
+                    let dialect = inflectArr.dial.$;
+                    return [{
+                        dialect: dialect,
+                        inflection: `${tense} ${voice} ${mood}`
+                    }];
+                }else {
+                    return [{
+                        dialect: 'Attic',
+                        inflection: `${tense} ${voice} ${mood}`
+                    }];
+                }
+            } else {
+                let person = inflectArr.pers.$;
+                let number = inflectArr.num.$;
+                let tense = inflectArr.tense.$;
+                let voice = inflectArr.voice.$;
+                let mood = inflectArr.mood.$;
+                if(inflectArr.dial){
+                    let dialect = inflectArr.dial.$;
+                    return [{
+                        dialect: dialect,
+                        inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                    }];
+                }else {
+                    return [{
+                        dialect: 'Attic',
+                        inflection: `${person} person ${number} ${tense} ${voice} ${mood}`
+                    }];
+                }
             }
+            
         }
     } else if (type === 'verb participle') {
         if(Array.isArray(inflectArr)){
