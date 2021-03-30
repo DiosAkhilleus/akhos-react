@@ -122,7 +122,7 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
 };
 
 const getGreekInflections = (inflectArr, type) => { // returns an array in which each element is an object of the dialect type and inflection pattern
-    console.log(type);
+
     if (type === 'verb') { //all other if statements contain similar code that will change what is returned in the object, depending on word type.
         if(Array.isArray(inflectArr)){ // if multiple inflection possibilities, returns array of all possible inflections. 
             let combinedArr = [];
@@ -336,24 +336,37 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
         if(Array.isArray(inflectArr)){
             let combinedArr = [];
                 for(let i = 0; i < inflectArr.length; i++){
-                    let person = inflectArr[i].pers.$;
-                    let gender = inflectArr[i].gend.$;
-                    let nCase = inflectArr[i].case.$;
-                    let number = inflectArr[i].num.$;
-
+                    if(inflectArr[i].pers !== undefined) {
+                        let person = inflectArr[i].pers.$;
+                        let gender = inflectArr[i].gend.$;
+                        let nCase = inflectArr[i].case.$;
+                        let number = inflectArr[i].num.$;
+    
                         combinedArr[i] = {
                             inflection: `${person} person ${gender} ${nCase} ${number}`
                         };
+                    } else {
+                        let gender = inflectArr[i].gend.$;
+                        let nCase = inflectArr[i].case.$;
+                        let number = inflectArr[i].num.$;
+
+                        combinedArr[i] = {
+                            inflection: `${gender} ${nCase} ${number}`
+                        };
+                    }
+                    
                 }
             return combinedArr;
+        } else {
+            let person = inflectArr.pers.$;
+            let gender = inflectArr.gend.$;
+            let nCase = inflectArr.case.$;
+            let number = inflectArr.num.$;
+            return [{
+                inflection: `${person} person ${gender} ${nCase} ${number}`
+            }];
         }
-        let person = inflectArr.pers.$;
-        let gender = inflectArr.gend.$;
-        let nCase = inflectArr.case.$;
-        let number = inflectArr.num.$;
-        return [{
-            inflection: `${person} person ${gender} ${nCase} ${number}`
-        }];
+        
     } else if (type === 'article') {
         if(Array.isArray(inflectArr)){
             let combinedArr = [];
@@ -392,7 +405,7 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                 inflection: `${gender} ${nCase} ${number}`
             }];
         }
-    }
+    } 
 
     //Fix Relative Pronouns, numerals, etc...
 };
