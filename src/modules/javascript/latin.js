@@ -115,33 +115,7 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
 const getLatinInflections = (inflections, type) => {
     //console.log(inflections, type);
     let returnArr = [];
-    if(type === 'noun') {
-        if(Array.isArray(inflections)){
-            for(let i = 0; i < inflections.length; i++){
-                let gender = inflections[i].gend.$;
-                let latCase = inflections[i].case.$;
-                let number = inflections[i].num.$;
-                let declension = inflections[i].decl.$;
-                let conj = {
-                    declension: declension,
-                    inflection: `${gender} ${latCase} ${number}`
-                }
-            
-                returnArr[i] = (conj);
-            }   
-            return returnArr;
-        } else {
-            let gender = inflections.gend.$;
-            let latCase = inflections.case.$;
-            let number = inflections.num.$;
-            let declension = inflections.decl.$;
-            
-            return [{
-                declension: declension,
-                inflection: `${gender} ${latCase} ${number}`
-            }];
-        }
-    } else if(type === 'verb') {
+    if(type === 'verb') {
         if(Array.isArray(inflections)){
             for(let i = 0; i < inflections.length; i++){
                 if(inflections[i].mood.$ === 'infinitive'){
@@ -185,6 +159,36 @@ const getLatinInflections = (inflections, type) => {
                     inflection: `${person} person ${number} ${latTense} ${latVoice} ${latMood}`
                 }];
             }
+        }
+    } else if(type === 'verb participle') {
+        console.log('verb participle');
+    } else if(type === 'adverb') {
+        console.log('adverb');
+    } else if(type === 'noun') {
+        if(Array.isArray(inflections)){
+            for(let i = 0; i < inflections.length; i++){
+                let gender = inflections[i].gend.$;
+                let latCase = inflections[i].case.$;
+                let number = inflections[i].num.$;
+                let declension = inflections[i].decl.$;
+                let conj = {
+                    declension: declension,
+                    inflection: `${gender} ${latCase} ${number}`
+                }
+            
+                returnArr[i] = (conj);
+            }   
+            return returnArr;
+        } else {
+            let gender = inflections.gend.$;
+            let latCase = inflections.case.$;
+            let number = inflections.num.$;
+            let declension = inflections.decl.$;
+            
+            return [{
+                declension: declension,
+                inflection: `${gender} ${latCase} ${number}`
+            }];
         }
     } else if(type === 'adjective') {
         if(Array.isArray(inflections)) {
@@ -231,8 +235,8 @@ const getLatinInflections = (inflections, type) => {
                 }];
             }
         } 
-    } else if(type === 'verb participle') {
-        console.log('verb participle');
+    } else if(type === 'pronoun') {
+        console.log("pronoun");
     }
 };
 
