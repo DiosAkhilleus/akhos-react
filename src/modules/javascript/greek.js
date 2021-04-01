@@ -341,7 +341,7 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                         let gender = inflectArr[i].gend.$;
                         let nCase = inflectArr[i].case.$;
                         let number = inflectArr[i].num.$;
-    
+                        
                         combinedArr[i] = {
                             inflection: `${person} person ${gender} ${nCase} ${number}`
                         };

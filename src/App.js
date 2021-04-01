@@ -19,13 +19,14 @@ function App () {
     const grekWord = await getGreek(lemma);
     setProvided(greek);
     setLemm (grekWord);
-  
+    setLang('gr');
 }
   const lat = async (lemma) => { // same as above grek
 
     const latWord = await getLatin(lemma);
     setProvided(latin);
     setLemm(latWord);
+    setLang('la');
   }
   const handleChangeGreek = (event) => { // as input is typed into greek form, it updates the state with the current value
     
@@ -39,13 +40,11 @@ function App () {
   const handleGreek = (e) => { // handles the submission of the Greek input form
     setRet(true);
     e.preventDefault();
-    setLang('gr');
     grek(greek);
   }
   const handleLatin = (e) => { // same as handleGreek but for Latin
     setRet(true);
     e.preventDefault();
-    setLang('la');
     lat(latin);
   }
 
