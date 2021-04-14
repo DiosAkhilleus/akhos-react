@@ -26,21 +26,21 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
     if (body === undefined) {
         console.log('undefined');
     }
-    //console.log(dataOut);
+    console.log(dataOut);
     if(Array.isArray(body)) {
         let retArr = [];
         for(let i = 0; i < body.length; i++){
-            const inflections = body[i].rest.entry.infl;
+            const inflectArr = body[i].rest.entry.infl;
             let headWord = body[i].rest.entry.dict.hdwd.$;
             let fixedHead = headWord.replace(/[1-9]/g, '');
             const type = body[i].rest.entry.dict.pofs.$;
-            const inflect = getLatinInflections(inflections, type);
+            const inflect = getLatininflectArr(inflectArr, type);
             const shortDict = await getWikiLatin(fixedHead);
             const longDict = await getPerseusLatin(fixedHead);
             let subObj = {};
             let check = false; 
             
-            if(inflect === undefined){ // if word is not inflected, returns array without inflections (numerals, particles, etc.)
+            if(inflect === undefined){ // if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
                 subObj = {
                     headword: fixedHead, 
                     type: type, 
@@ -78,28 +78,28 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
 
     return retArr;
     } else {
-        const inflections = body.rest.entry.infl;
+        const inflectArr = body.rest.entry.infl;
         let headWord = body.rest.entry.dict.hdwd.$;
         let fixedHead = headWord.replace(/[1-9]/g, '');
         //console.log(fixedHead);
         const type = body.rest.entry.dict.pofs.$;
-        const inflect = getLatinInflections(inflections, type);
+        const inflect = getLatininflectArr(inflectArr, type);
         const shortDict = await getWikiLatin(fixedHead);
         const longDict = await getPerseusLatin(fixedHead);
-        
-        if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
-            console.log("UND");
-            return {
-                headword: fixedHead, 
-                type: type, 
-                inflections: [
-                    {
-                        inflection: 'uninflected'
-                    }
-                ], 
-                shortDef: shortDict,
-                longDef: longDict
-            };
+        console.log(inflect);
+        if(inflect === undefined){ // as before, if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
+            //console.log("UND");
+            return [{
+                    headword: fixedHead, 
+                    type: type, 
+                    inflections: [
+                        {
+                            inflection: 'uninflected'
+                        }
+                    ], 
+                    shortDef: shortDict,
+                    longDef: longDict
+            }];
         } else {
             return [{   
                 headword: fixedHead,
@@ -112,26 +112,36 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
     }
 };
 
-const getLatinInflections = (inflections, type) => {
-    //console.log(inflections, type);
+const getLatininflectArr = (inflectArr, type) => {
+    console.log(inflectArr, type); 
     let returnArr = [];
     if(type === 'verb') {
-        if(Array.isArray(inflections)){
-            for(let i = 0; i < inflections.length; i++){
-                if(inflections[i].mood.$ === 'infinitive'){
-                    let latTense = inflections[i].tense.$;
-                    let latVoice = inflections[i].voice.$;
-                    let latMood = inflections[i].mood.$;
+        if(Array.isArray(inflectArr)){
+            for(let i = 0; i < inflectArr.length; i++){
+                if(inflectArr[i].mood.$ === 'participle'){
+                    let gender = inflectArr[i].gend.$;
+                    let latCase = inflectArr[i].case.$;
+                    let number = inflectArr[i].num.$;
+                    let latTense = inflectArr[i].tense.$;
+                    let latMood = inflectArr[i].mood.$;
+                    let subObj = {
+                        inflection: `${gender} ${latCase} ${number} ${latTense} ${latMood}`
+                    }
+                    returnArr[i] = subObj
+                } else if(inflectArr[i].mood.$ === 'infinitive'){
+                    let latTense = inflectArr[i].tense.$;
+                    let latVoice = inflectArr[i].voice.$;
+                    let latMood = inflectArr[i].mood.$;
                     let subObj = {
                         inflection: `${latTense} ${latVoice} ${latMood}`
                     }
                     returnArr[i] = (subObj);
                 } else {
-                    let person = inflections[i].pers.$;
-                    let number = inflections[i].num.$;
-                    let latTense = inflections[i].tense.$;
-                    let latVoice = inflections[i].voice.$;
-                    let latMood = inflections[i].mood.$;
+                    let person = inflectArr[i].pers.$;
+                    let number = inflectArr[i].num.$;
+                    let latTense = inflectArr[i].tense.$;
+                    let latVoice = inflectArr[i].voice.$;
+                    let latMood = inflectArr[i].mood.$;
                     let subObj = {
                         inflection: `${person} person ${number} ${latTense} ${latVoice} ${latMood}`
                     }
@@ -140,20 +150,31 @@ const getLatinInflections = (inflections, type) => {
             }   
             return returnArr;
         } else {
-            if(inflections.mood.$ === 'infinitive'){
-                let latTense = inflections.tense.$;
-                let latVoice = inflections.voice.$;
-                let latMood = inflections.mood.$;
+            if(inflectArr.mood.$ === 'infinitive') {
+                let latTense = inflectArr.tense.$;
+                let latVoice = inflectArr.voice.$;
+                let latMood = inflectArr.mood.$;
 
                 return [{
                     inflection: `${latTense} ${latVoice} ${latMood}`
                 }];
-            } else {
-                let person = inflections.pers.$;
-                let number = inflections.num.$;
-                let latTense = inflections.tense.$;
-                let latVoice = inflections.voice.$;
-                let latMood = inflections.mood.$;
+            } else if (inflectArr.mood.$ === 'participle') {
+                let gender = inflectArr.gend.$;
+                let latCase = inflectArr.case.$;
+                let number = inflectArr.num.$;
+                let latTense = inflectArr.tense.$;
+                let latMood = inflectArr.mood.$;
+                return [{
+                    inflection: `${gender} ${latCase} ${number} ${latTense} ${latMood}`
+                }]
+            }
+            
+            else {
+                let person = inflectArr.pers.$;
+                let number = inflectArr.num.$;
+                let latTense = inflectArr.tense.$;
+                let latVoice = inflectArr.voice.$;
+                let latMood = inflectArr.mood.$;
 
                 return [{
                     inflection: `${person} person ${number} ${latTense} ${latVoice} ${latMood}`
@@ -161,16 +182,54 @@ const getLatinInflections = (inflections, type) => {
             }
         }
     } else if(type === 'verb participle') {
-        console.log('verb participle');
-    } else if(type === 'adverb') {
-        console.log('adverb');
+        if(Array.isArray(inflectArr)){
+            let combinedArr = [];
+                for(let i = 0; i < inflectArr.length; i++){
+                    let gender = inflectArr[i].gend.$;
+                    let number = inflectArr[i].num.$;
+                    let tense = inflectArr[i].tense.$;
+                    let voice = inflectArr[i].voice.$;
+                    let mood = inflectArr[i].mood.$;
+                    if(inflectArr[i].dial){
+                        let dialect = inflectArr[i].dial.$;
+                        combinedArr[i] = {
+                            dialect: dialect, 
+                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                        };
+                    } else {
+                        combinedArr[i] = {
+                            dialect: 'Attic',
+                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                        };
+                    }
+                }
+            return combinedArr;
+        } else {
+            let gender = inflectArr.gend.$;
+            let number = inflectArr.num.$;
+            let tense = inflectArr.tense.$;
+            let voice = inflectArr.voice.$;
+            let mood = inflectArr.mood.$;
+            if(inflectArr.dial){
+                let dialect = inflectArr.dial.$;
+                return [{
+                    dialect: dialect, 
+                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                }];
+            } else {
+                return [{
+                    dialect: 'Attic',
+                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                }];
+            }
+        }
     } else if(type === 'noun') {
-        if(Array.isArray(inflections)){
-            for(let i = 0; i < inflections.length; i++){
-                let gender = inflections[i].gend.$;
-                let latCase = inflections[i].case.$;
-                let number = inflections[i].num.$;
-                let declension = inflections[i].decl.$;
+        if(Array.isArray(inflectArr)){
+            for(let i = 0; i < inflectArr.length; i++){
+                let gender = inflectArr[i].gend.$;
+                let latCase = inflectArr[i].case.$;
+                let number = inflectArr[i].num.$;
+                let declension = inflectArr[i].decl.$;
                 let conj = {
                     declension: declension,
                     inflection: `${gender} ${latCase} ${number}`
@@ -180,10 +239,10 @@ const getLatinInflections = (inflections, type) => {
             }   
             return returnArr;
         } else {
-            let gender = inflections.gend.$;
-            let latCase = inflections.case.$;
-            let number = inflections.num.$;
-            let declension = inflections.decl.$;
+            let gender = inflectArr.gend.$;
+            let latCase = inflectArr.case.$;
+            let number = inflectArr.num.$;
+            let declension = inflectArr.decl.$;
             
             return [{
                 declension: declension,
@@ -191,11 +250,11 @@ const getLatinInflections = (inflections, type) => {
             }];
         }
     } else if(type === 'adjective') {
-        if(Array.isArray(inflections)) {
-            for(let i = 0; i < inflections.length; i++) {
-                if(inflections[i].gend.$ === 'adverbial') {
-                    let declension = inflections[i].decl.$;
-                    let gender = inflections[i].gend.$;
+        if(Array.isArray(inflectArr)) {
+            for(let i = 0; i < inflectArr.length; i++) {
+                if(inflectArr[i].gend.$ === 'adverbial') {
+                    let declension = inflectArr[i].decl.$;
+                    let gender = inflectArr[i].gend.$;
                     let conj = {
                         declension: declension,
                         inflection: gender
@@ -203,10 +262,10 @@ const getLatinInflections = (inflections, type) => {
 
                     returnArr[i] = (conj);
                 } else {
-                    let gender = inflections[i].gend.$;
-                    let latCase = inflections[i].case.$;
-                    let number = inflections[i].num.$;
-                    let declension = inflections[i].decl.$;
+                    let gender = inflectArr[i].gend.$;
+                    let latCase = inflectArr[i].case.$;
+                    let number = inflectArr[i].num.$;
+                    let declension = inflectArr[i].decl.$;
                     let conj = {
                         declension: declension,
                         inflection: `${gender} ${latCase} ${number}`
@@ -216,18 +275,18 @@ const getLatinInflections = (inflections, type) => {
             }   
             return returnArr;
         } else {
-            if(inflections.gend.$ === 'adverbial') {
-                let declension = inflections.decl.$;
-                let gender = inflections.gend.$;
+            if(inflectArr.gend.$ === 'adverbial') {
+                let declension = inflectArr.decl.$;
+                let gender = inflectArr.gend.$;
                 return [{
                     declension: declension,
                     inflection: gender
                 }];
             } else {
-                let gender = inflections.gend.$;
-                let latCase = inflections.case.$;
-                let number = inflections.num.$;
-                let declension = inflections.decl.$;
+                let gender = inflectArr.gend.$;
+                let latCase = inflectArr.case.$;
+                let number = inflectArr.num.$;
+                let declension = inflectArr.decl.$;
                 returnArr = [`${declension} declension`, `${gender} ${latCase} ${number}`];
                 return [{
                     declension: declension,
@@ -236,7 +295,27 @@ const getLatinInflections = (inflections, type) => {
             }
         } 
     } else if(type === 'pronoun') {
-        console.log("pronoun");
+        if(Array.isArray(inflectArr)){
+            for(let i = 0; i < inflectArr.length; i++){
+                let gender = inflectArr[i].gend.$;
+                let latCase = inflectArr[i].case.$;
+                let number = inflectArr[i].num.$;
+                let conj = {
+                    inflection: `${gender} ${latCase} ${number}`
+                }
+            
+                returnArr[i] = (conj);
+            }   
+            return returnArr;
+        } else {
+            let gender = inflectArr.gend.$;
+            let latCase = inflectArr.case.$;
+            let number = inflectArr.num.$;
+            
+            return [{
+                inflection: `${gender} ${latCase} ${number}`
+            }];
+        }
     }
 };
 

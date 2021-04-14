@@ -207,6 +207,7 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
             let combinedArr = [];
                 for(let i = 0; i < inflectArr.length; i++){
                     let gender = inflectArr[i].gend.$;
+                    let grekCase = inflectArr[i].case.$;
                     let number = inflectArr[i].num.$;
                     let tense = inflectArr[i].tense.$;
                     let voice = inflectArr[i].voice.$;
@@ -215,18 +216,19 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                         let dialect = inflectArr[i].dial.$;
                         combinedArr[i] = {
                             dialect: dialect, 
-                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                            inflection: `${gender} ${grekCase} ${number} ${tense} ${voice} ${mood}`
                         };
                     } else {
                         combinedArr[i] = {
                             dialect: 'Attic',
-                            inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                            inflection: `${gender} ${grekCase} ${number} ${tense} ${voice} ${mood}`
                         };
                     }
                 }
             return combinedArr;
         } else {
             let gender = inflectArr.gend.$;
+            let grekCase = inflectArr.case.$;
             let number = inflectArr.num.$;
             let tense = inflectArr.tense.$;
             let voice = inflectArr.voice.$;
@@ -235,12 +237,12 @@ const getGreekInflections = (inflectArr, type) => { // returns an array in which
                 let dialect = inflectArr.dial.$;
                 return [{
                     dialect: dialect, 
-                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                    inflection: `${gender} ${grekCase} ${number} ${tense} ${voice} ${mood}`
                 }];
             } else {
                 return [{
                     dialect: 'Attic',
-                    inflection: `${gender} ${number} ${tense} ${voice} ${mood}`
+                    inflection: `${gender} ${grekCase} ${number} ${tense} ${voice} ${mood}`
                 }];
             }
         }
