@@ -17,7 +17,7 @@ const getGreek = async (lemma) => {
             multiMorph.push(subMorph);
         }
         //parseMultiMorph(multiMorph);
-        console.log( multiMorph );
+        //console.log( multiMorph );
     }
     
 };
@@ -28,9 +28,9 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
     const greekData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
     const dataOut = await greekData.json();
     const body = dataOut.RDF.Annotation.Body;
-    console.log(dataOut);
+    //console.log(dataOut);
     if(body === undefined){
-        console.log('undefined');
+        //console.log('undefined');
     }
 
     //console.log(dataOut);
