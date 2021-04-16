@@ -25,7 +25,7 @@ const getGreek = async (lemma) => {
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     
     // fetches the given greek string from the morphology service
-    const greekData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
+    const greekData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
     const dataOut = await greekData.json();
     const body = dataOut.RDF.Annotation.Body;
     //console.log(dataOut);
@@ -470,11 +470,11 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
     const beta = greekToBetaCode(lemma);
     
     let dataAsJson = {};
-    const data = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}`);
+    const data = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}`);
     const textData = await data.text();
 
     if (textData.indexOf('An Error Occurred') > -1) {
-        const data1 = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}1`);
+        const data1 = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}1`);
         const textData1 = await data1.text();
         if (textData1.indexOf('An Error Occurred') > -1) {
             return "Can't Find Entry";

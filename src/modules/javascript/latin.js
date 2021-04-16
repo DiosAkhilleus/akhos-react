@@ -19,7 +19,7 @@ const getLatin = async (lemma) => {
 };
 
 const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
-    const latinData = await fetch(`http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
+    const latinData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
     const dataOut = await latinData.json();
     const body = dataOut.RDF.Annotation.Body;
 
@@ -296,12 +296,12 @@ const getWikiLatin = async (lemma) => {
 
 const getPerseusLatin = async (lemma) => {
     let dataAsJson = {};
-    const data = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3D${lemma}`);
+    const data = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3D${lemma}`);
     const textData = await data.text();
     
 
     if (textData.indexOf('An Error Occurred') > -1){
-        const data1 = await fetch(`http://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3D${lemma}1`);
+        const data1 = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3D${lemma}1`);
         const textData1 = await data1.text();
         if (textData1.indexOf('An Error Occurred') > -1){
             return "Can't Find Entry";
