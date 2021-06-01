@@ -557,4 +557,4 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
     }
 };
 
-export default getGreek;
+export default getGreekMorph;

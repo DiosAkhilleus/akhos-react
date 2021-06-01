@@ -94,3 +94,7 @@ table {
     margin-left:15px;
     max-width: 97vw;
 }
+
+.phrase-container {
+    border: 1px solid black;
+}

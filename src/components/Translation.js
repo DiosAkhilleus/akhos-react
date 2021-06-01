@@ -7,7 +7,13 @@ const Translation = (props) => {
             return(
                 <div className="infl">
                 <h4 className="possibility">Possibility {i + 1}</h4>
-                {Object.keys(item).map((val, i) => {return (<div className='inflect' key={Math.floor(Math.random()*1000)}><div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div><br/></div>)})}
+                {Object.keys(item).map((val, i) => {
+                    return (
+                        <div className='inflect' key={i}>
+                        <div>{val.charAt(0).toUpperCase() + val.slice(1)}: {item[val]}</div>
+                        <br/>
+                        </div>)
+                        })}
                 </div>
             )
     }
