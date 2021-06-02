@@ -412,38 +412,10 @@ const getWikiGreek = async (lemma) => { // fetches the wiktionary definition for
                 def = def + defArr[i].definition; 
             }
         }
-        let fixedDef = def.replace(/undefined/g, '');
-        
-        
-        document.getElementById('greek').innerHTML = fixedDef;
-    
-        let titles = document.querySelectorAll('#greek a');
-        if (titles.length === 0){
-            return document.getElementById('greek').innerHTML;
-        }
-        
-        let sumDef;
-
-        if (titles.length < 8 && titles.length > 0) {
-            for(let i = 0; i < titles.length; i++){
-                if(i === 0){
-                    sumDef = `${titles[i].textContent}`;
-                } else {
-                    sumDef = sumDef + `, ${titles[i].textContent}`;
-                }
-            }
-        } else {
-            for(let i = 0; i < titles.length/4; i++){
-                if(i === 0){
-                    sumDef = `${titles[i].textContent}`;
-                } else {
-                    sumDef = sumDef + `, ${titles[i].textContent}`;
-                }
-            }
-        }
-        //sumDef.replace(/[^a-zA-Z\s,]/g, '')
+        let fixedDef = def.replace(/<(.*?)>/g, ' ');
+        let betterDef = fixedDef.replace(/undefined/g, '');
             
-        return sumDef;
+        return betterDef;
     }
 };
 
