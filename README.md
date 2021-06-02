@@ -7,6 +7,9 @@ Akhos uses both the Latin and Greek morphology tools from the Perseids project (
 ## Getting Started
     To get started, load the page and type in your desired text in either Latin or Greek. 
 
+    Page Link: 
+        https://diosakhilleus.github.io/akhos-react/
+
     If you don't know either language, here are a few example phrases for you to copy and paste.
 
     Greek:
