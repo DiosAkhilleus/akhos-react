@@ -21,7 +21,7 @@ Akhos uses both the Latin and Greek morphology tools from the Perseids project (
     You can hover over each word to see its morphology, and if you want a particular word to remain visible, simply click on it.
 
 #### Warning
-    If a long phrase is input, expect the phrase to take a while to show up and work properly. In order to be able to look at each word individually
+    If a long phrase is input, expect the phrase to take a while to show up and work properly.
 
 #### Please enjoy, and I hope it's in some way helpful in your quest to learn and read the Classical Languages.
 <br>
