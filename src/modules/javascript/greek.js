@@ -2,25 +2,6 @@ import {  greekToBetaCode  } from 'beta-code-js';
 const convert = require('xml-js');
 const flatten = require('flat');
 
-const getGreek = async (lemma) => {
-    
-    let lemmaArr = lemma.split(' ');
-    
-    if(lemmaArr.length === 1){
-        const morph = await getGreekMorph(lemmaArr[0]);
-        //parseSingleMorph(morph);
-        return morph;
-    } else {
-        let multiMorph = [];
-        for(let i = 0; i < lemmaArr.length; i++){
-            const subMorph = await getGreekMorph(lemmaArr[i]);
-            multiMorph.push(subMorph);
-        }
-        //parseMultiMorph(multiMorph);
-        //console.log( multiMorph );
-    }
-    
-};
 
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     

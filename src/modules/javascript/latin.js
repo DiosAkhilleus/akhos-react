@@ -1,22 +1,6 @@
 const convert = require('xml-js');
 const flatten = require('flat');
 
-const getLatin = async (lemma) => {
-    
-    let lemmaArr = lemma.split(' ');
-    
-    if(lemmaArr.length === 1){
-        const morph = await getLatinMorph(lemmaArr[0]);
-        return morph; 
-    } else {
-        let allMorph = [];
-        for(let i = 0; i < lemmaArr.length; i++){
-            const subMorph = await getLatinMorph(lemmaArr[i]);
-            allMorph.push(subMorph);
-        }
-        return allMorph;
-    }
-};
 
 const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
     const latinData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
@@ -416,4 +400,4 @@ const getPerseusLatin = async (lemma) => {
 };
 
 
-export default getLatin
+export default getLatinMorph
