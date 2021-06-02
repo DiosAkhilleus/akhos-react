@@ -1,13 +1,29 @@
 # Akhos
 
-*Migrating akhos-morphology to React*
-
 This is a tool for students of Greek and Latin.
 
-Akhos uses both the Latin and Greek morphology tools from the Perseids project (https://www.perseids.org/)
+Akhos uses both the Latin and Greek morphology tools from the Perseids project (https://www.perseids.org/), as well as the WikiMedia REST API and the Perseus Project XML API.
 
-The WikiMedia REST Api is used to fetch the short definition for the corresponding headword. This service will be kind of hit or miss, depending on input string. For the longer definitions, I used the Perseus Project XML API, which provides more robust lexical entries than the WikiMedia API. The results can sometimes, however, be formatted poorly due to inconsistent formatting by the API provider.
+## Getting Started
+    To get started, load the page and type in your desired text in either Latin or Greek. 
 
-Please enjoy, and I hope it's in some way helpful in your quest to learn and read the Classical Languages.
+    If you don't know either language, here are a few example phrases for you to copy and paste.
 
---DiosAkhilleus
+    Greek:
+        ἄνδρα μοι ἔννεπε μοῦσα
+            The first four words of Homer's Odyssey, "Tell me of a man, Muse..."
+
+    Latin:
+        cogito ergo sum
+            The famous phrase by René Descartes, "I think, therefore I am"
+
+### After Submit
+    You can hover over each word to see its morphology, and if you want a particular word to remain visible, simply click on it.
+
+#### Warning
+    If a long phrase is input, expect the phrase to take a while to show up and work properly. In order to be able to look at each word individually
+
+#### Please enjoy, and I hope it's in some way helpful in your quest to learn and read the Classical Languages.
+<br>
+
+## — DiosAkhilleus
