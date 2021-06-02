@@ -42,6 +42,24 @@ function App () {
     getGreekPhrase();
  }, [greekArr])
 
+ useEffect(() => {
+  async function getLatinPhrase() {
+   let arr = [];
+   if (latinArr !== []) {
+     for (let i = 0; i < latinArr.length; i++) {
+       let word = await getLatinMorph (latinArr[i]);
+       arr.push(word);
+     } 
+   setMorphList(arr);
+     
+   } else if (latinArr.length === 1) {
+       let latWord = await getLatinMorph(latinArr[0])
+       setMorphList(latWord); 
+     }
+   }
+   getLatinPhrase();
+}, [latinArr])
+
   useEffect(() => {
     console.log(morphList);
   }, [morphList]);
@@ -102,6 +120,9 @@ const stopDisplay = (e, index) => {
 
   const handleLang = (e, lang) => {
     if (lang === 'greek') {
+      setVisible(false)
+      setActiveIndex();
+      setActive(false);
       setRet(true);
       setPhrase(greek);
       setLanguage('gr');
@@ -110,6 +131,9 @@ const stopDisplay = (e, index) => {
       //grek(greek);
     }
     if (lang === 'latin') {
+      setVisible(false)
+      setActiveIndex();
+      setActive(false);
       setRet(true);
       setPhrase(latin);
       setLanguage('la');

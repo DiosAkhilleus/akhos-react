@@ -116,7 +116,11 @@ table {
 }
 
 .phrase-word:hover {
-    color:grey;
+    color:rgb(109, 109, 109);
     cursor:pointer;
     user-select:none;
+}
+
+.phrase-word:active {
+    color:rgb(145, 145, 145);
 }
