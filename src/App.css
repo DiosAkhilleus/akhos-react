@@ -88,6 +88,9 @@ table {
 
 #form-container {
     width: 97vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 #translation {
@@ -97,4 +100,23 @@ table {
 
 .phrase-container {
     border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    height:3rem;
+    line-height:3rem;
+    font-size:2rem;
+    flex-wrap: wrap;
+}
+
+.phrase-word {
+    margin-left: 0.5rem;
+    margin-right:1rem;
+}
+
+.phrase-word:hover {
+    color:grey;
+    cursor:pointer;
+    user-select:none;
 }

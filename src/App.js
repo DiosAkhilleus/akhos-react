@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import getGreekMorph from './modules/javascript/greek';
-import getLatin from './modules/javascript/latin';
+import getLatinMorph from './modules/javascript/latin';
 import Mult from './components/Mult';
 import {Button} from '@material-ui/core';
 import './App.css';
@@ -10,12 +10,16 @@ function App () {
   const [greek, setGreek] = useState ('');
   const [latin, setLatin] = useState ('');
   const [ret, setRet] = useState(false);
-  const [lang, setLang] = useState('');
+  const [language, setLanguage] = useState('');
   const [provided, setProvided] = useState('');
   const [lemm, setLemm] = useState([]);
-  const [phraseArr, setPhraseArr] = useState([]);
+  const [greekArr, setGreekArr] = useState([]);
+  const [latinArr, setLatinArr] = useState([]);
   const [morphList, setMorphList] = useState([]);
   const [phrase, setPhrase] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [active, setActive] = useState(false);
+  const [activeIndex, setActiveIndex] = useState();
 
 
 
@@ -23,27 +27,20 @@ function App () {
  useEffect(() => {
    async function getGreekPhrase() {
     let arr = [];
-    if (phraseArr !== []) {
-      for (let i = 0; i < phraseArr.length; i++) {
-        let word = await getGreekMorph (phraseArr[i]);
+    if (greekArr !== []) {
+      for (let i = 0; i < greekArr.length; i++) {
+        let word = await getGreekMorph (greekArr[i]);
         arr.push(word);
       } 
     setMorphList(arr);
-
-    } else if (phraseArr.length === 1) {
-        let grekWord = await getGreekMorph(phraseArr[0])
+      
+    } else if (greekArr.length === 1) {
+        let grekWord = await getGreekMorph(greekArr[0])
         setMorphList(grekWord); 
       }
     }
-    
-
-    // setMorphList([])
-    // for (let i = 0; i < phraseArr.length; i++) {
-    //   const grekWord = await getGreekMorph(phraseArr[i]);
-    //   setMorphList(morphList.concat(grekWord));
-    // }
     getGreekPhrase();
- }, [phraseArr])
+ }, [greekArr])
 
   useEffect(() => {
     console.log(morphList);
@@ -64,9 +61,35 @@ function App () {
 //     setLang('la');
 //   }
 
+useEffect(() => {
+  console.log(activeIndex);
+  
+}, [activeIndex])
+
 const displayMorph = (e, index) => {
-  console.log(index);
+  if (index !== activeIndex) {
+    setActiveIndex(index);
+    setVisible(true);
+    setActive(false);
+  }
+ 
 }
+
+const setClicked = (e, index) => {
+  setActiveIndex(index);
+  setVisible(true);
+  setActive(true);
+}
+
+const stopDisplay = (e, index) => {
+  
+  if (active !== true) {
+    setVisible(false)
+    setActiveIndex();
+  }
+
+}
+
   
   const handleChange = (e, lang) => {
     if (lang === 'greek') {
@@ -81,14 +104,16 @@ const displayMorph = (e, index) => {
     if (lang === 'greek') {
       setRet(true);
       setPhrase(greek);
-      setPhraseArr(greek.split(' '));
+      setLanguage('gr');
+      setGreekArr(greek.split(' '));
       
       //grek(greek);
     }
     if (lang === 'latin') {
       setRet(true);
       setPhrase(latin);
-      setPhraseArr(latin.split(' '));
+      setLanguage('la');
+      setLatinArr(latin.split(' '));
       //lat(latin)
     }
     e.preventDefault();
@@ -116,12 +141,14 @@ const displayMorph = (e, index) => {
           </form>
         </div>
         <div className='phrase-container'>
-          {phraseArr.map((el, index) => (
-            <div key={index} onMouseOver={(e) => {displayMorph(e, index)}}>{el}</div>
+          {language === 'gr' ? greekArr.map((el, index) => (
+            <div className='phrase-word' key={index} onMouseDown={(e) => {setClicked(e, index)}} onMouseEnter={(e) => {displayMorph(e, index)}} onMouseLeave={(e) => {stopDisplay(e, index)}}>{el}</div>
+          )) : latinArr.map((el, index) => (
+            <div className='phrase-word' key={index} onMouseDown={(e) => {setClicked(e, index)}} onMouseEnter={(e) => {displayMorph(e, index)}} onMouseLeave={(e) => {stopDisplay(e, index)}}>{el}</div>
           ))}
         </div>
         <br/>
-          <div id="translation">{(ret) ? (<Mult input={lemm} provided={provided} lang={lang}/>) : ''}</div>
+          {visible ? <div id='translation'><Mult input={morphList[activeIndex]} provided={greekArr[activeIndex]} lang={language}/></div> : ''}
           <div id='greek'></div>
           <div id='latin'></div>
       </div>
