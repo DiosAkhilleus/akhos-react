@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/akhos-react/static/css/main.055cf7fb.chunk.css",
-    "main.js": "/akhos-react/static/js/main.61457baf.chunk.js",
-    "main.js.map": "/akhos-react/static/js/main.61457baf.chunk.js.map",
+    "main.js": "/akhos-react/static/js/main.eb6a6e92.chunk.js",
+    "main.js.map": "/akhos-react/static/js/main.eb6a6e92.chunk.js.map",
     "runtime-main.js": "/akhos-react/static/js/runtime-main.805013c6.js",
     "runtime-main.js.map": "/akhos-react/static/js/runtime-main.805013c6.js.map",
     "static/js/2.0f18592e.chunk.js": "/akhos-react/static/js/2.0f18592e.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.805013c6.js",
     "static/js/2.0f18592e.chunk.js",
     "static/css/main.055cf7fb.chunk.css",
-    "static/js/main.61457baf.chunk.js"
+    "static/js/main.eb6a6e92.chunk.js"
   ]
 }
