@@ -112,7 +112,7 @@ function App () {
       setActiveIndex();
       setActive(false);
       setLanguage('la');
-      let cleaned = greek.replace(/,/g, '');
+      let cleaned = latin.replace(/,/g, '');
       setLatinArr(cleaned.split(' '));
       //lat(latin)
     }
