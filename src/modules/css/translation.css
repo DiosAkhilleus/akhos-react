@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caudex&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caudex&family=EB+Garamond&family=El+Messiri&family=Marcellus&display=swap');
 
 .infl {
     color: rgb(21, 39, 40);
@@ -8,7 +10,7 @@
 .possibility {
     color:rgb(152, 19, 46);
     font-size:28px;
-    font-family:fantasy
+    font-family:'El Messiri', sans-serif;
 }
 
 .inflect, .short, .long {
@@ -19,11 +21,11 @@
 .title {
     font-size:50px;
     margin-bottom: 10px;
-    font-family: 'GFS Didot', serif;
+    font-family: 'EB Garamond', serif;
 }
 
 .head {
-    font-family: 'GFS Didot', serif;
+    font-family: 'EB Garamond', serif;
     font-size: 30px; 
 }
 
