@@ -103,7 +103,8 @@ function App () {
       setActiveIndex();
       setActive(false);
       setLanguage('gr');
-      setGreekArr(greek.split(' '));
+      let cleaned = greek.replace(/,/g, '');
+      setGreekArr(cleaned.split(' '));
     }
     if (lang === 'latin') {
       setLoaded(false);
@@ -111,7 +112,8 @@ function App () {
       setActiveIndex();
       setActive(false);
       setLanguage('la');
-      setLatinArr(latin.split(' '));
+      let cleaned = greek.replace(/,/g, '');
+      setLatinArr(cleaned.split(' '));
       //lat(latin)
     }
     e.preventDefault();
