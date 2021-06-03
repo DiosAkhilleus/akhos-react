@@ -28,13 +28,19 @@ function App () {
     if (greekArr !== []) {
       for (let i = 0; i < greekArr.length; i++) {
         let word = await getGreekMorph (greekArr[i]);
-        arr.push(word);
+        if (word === undefined) {
+          arr.push('Error: Undefined Word');
+        } else {arr.push(word)};
       } 
     setMorphList(arr);
     setLoaded(true);
     } else if (greekArr.length === 1) {
         let grekWord = await getGreekMorph(greekArr[0])
-        setMorphList(grekWord); 
+        if (grekWord === undefined) {
+          setMorphList('Error: Undefined Word');
+        } else {
+          setMorphList(grekWord);
+        }
         setLoaded(true);
       }
     }
@@ -47,14 +53,19 @@ function App () {
     if (latinArr !== []) {
       for (let i = 0; i < latinArr.length; i++) {
         let word = await getLatinMorph (latinArr[i]);
-        arr.push(word);
+        if (word === undefined) {
+          arr.push('Error: Undefined Word');
+        } else {arr.push(word);}
+        
       } 
     setMorphList(arr);
     setLoaded(true);
       
     } else if (latinArr.length === 1) {
         let latWord = await getLatinMorph(latinArr[0])
-        setMorphList(latWord); 
+        if (latWord === undefined) {
+          setMorphList('Error: Undefined Word');
+        } else {setMorphList(latWord);}
         setLoaded(true);
       }
     }
@@ -103,8 +114,13 @@ function App () {
       setActiveIndex();
       setActive(false);
       setLanguage('gr');
-      let cleaned = greek.replace(/,/g, '');
-      setGreekArr(cleaned.split(' '));
+      let trimmed = greek.trim();
+      let cleaned = trimmed.replace(/,/g, '');
+      let cleanedArr = cleaned.split(' ');
+      for (let i = 0; i < cleanedArr.length; i++) {
+        cleanedArr[i].trim();
+      }
+      setGreekArr(cleanedArr);
     }
     if (lang === 'latin') {
       setLoaded(false);
@@ -112,8 +128,13 @@ function App () {
       setActiveIndex();
       setActive(false);
       setLanguage('la');
-      let cleaned = latin.replace(/,/g, '');
-      setLatinArr(cleaned.split(' '));
+      let trimmed = latin.trim();
+      let cleaned = trimmed.replace(/,/g, '');
+      let cleanedArr = cleaned.split(' ');
+      for (let i = 0; i < cleanedArr.length; i++) {
+        cleanedArr[i].trim()
+      }
+      setLatinArr(cleanedArr);
       //lat(latin)
     }
     e.preventDefault();
