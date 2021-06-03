@@ -6,7 +6,7 @@ const Mult = ({ input, provided, lang }) => {
         <>
             {input.map((el, index) => {return ( 
                 <Translation 
-                    key={Math.random()}
+                    key={index}
                     provided={provided}
                     head={`From: ${el.headword}`} 
                     type={el.type.charAt(0).toUpperCase() + el.type.slice(1)} 
