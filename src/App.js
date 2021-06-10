@@ -115,7 +115,7 @@ function App () {
       setActive(false);
       setLanguage('gr');
       let trimmed = greek.trim();
-      let cleaned = trimmed.replace(/,/g, '');
+      let cleaned = trimmed.replace(/[^a-zA-Z]/g, '');
       let cleanedArr = cleaned.split(' ');
       for (let i = 0; i < cleanedArr.length; i++) {
         cleanedArr[i].trim();
@@ -129,7 +129,7 @@ function App () {
       setActive(false);
       setLanguage('la');
       let trimmed = latin.trim();
-      let cleaned = trimmed.replace(/,/g, '');
+      let cleaned = trimmed.replace(/[^a-zA-Z]/g, '');
       let cleanedArr = cleaned.split(' ');
       for (let i = 0; i < cleanedArr.length; i++) {
         cleanedArr[i].trim()
