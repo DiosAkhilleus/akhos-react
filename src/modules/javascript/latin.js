@@ -3,97 +3,109 @@ const flatten = require('flat');
 
 
 const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
-    const latinData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
-    const dataOut = await latinData.json();
-    const body = dataOut.RDF.Annotation.Body;
-
-    if (body === undefined) {
-        console.log('undefined');
-    }
-    //console.log(dataOut);
-    if(Array.isArray(body)) {
-        let retArr = [];
-        for(let i = 0; i < body.length; i++){
-            const inflectArr = body[i].rest.entry.infl;
-            let headWord = body[i].rest.entry.dict.hdwd.$;
+    try {
+        const latinData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=morpheuslat&word=${lemma}`, {mode: 'cors'})
+        const dataOut = await latinData.json();
+        const body = dataOut.RDF.Annotation.Body;
+    
+        if (body === undefined) {
+            throw new Error ('New Exception');
+        }
+        //console.log(dataOut);
+        if(Array.isArray(body)) {
+            let retArr = [];
+            for(let i = 0; i < body.length; i++){
+                const inflectArr = body[i].rest.entry.infl;
+                let headWord = body[i].rest.entry.dict.hdwd.$;
+                let fixedHead = headWord.replace(/[1-9]/g, '');
+                const type = body[i].rest.entry.dict.pofs.$;
+                const inflect = getLatininflectArr(inflectArr, type);
+                const shortDict = await getWikiLatin(fixedHead);
+                const longDict = await getPerseusLatin(fixedHead);
+                let subObj = {};
+                let check = false; 
+                
+                if(inflect === undefined){ // if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
+                    subObj = {
+                        headword: fixedHead, 
+                        type: type, 
+                        inflections: [
+                            {
+                                inflections: "uninflected"
+                            }
+                        ], 
+                        shortDef: shortDict,
+                        longDef: longDict
+                    };
+                } else {
+                    subObj = {
+                        headword: fixedHead, 
+                        type: type, 
+                        inflections: inflect,
+                        shortDef: shortDict,
+                        longDef: longDict
+                    };
+                }
+                
+                //console.log(setArr);
+                
+                for(let i = 0; i < retArr.length; i++) {
+                        if(JSON.stringify(subObj) === JSON.stringify(retArr[i])){
+                            check = true;
+                        }
+                }
+                if(check === false) {
+                    
+                    retArr[i] = (subObj);
+                }
+            }
+            
+    
+        return retArr;
+        } else {
+            const inflectArr = body.rest.entry.infl;
+            let headWord = body.rest.entry.dict.hdwd.$;
             let fixedHead = headWord.replace(/[1-9]/g, '');
-            const type = body[i].rest.entry.dict.pofs.$;
+            //console.log(fixedHead);
+            const type = body.rest.entry.dict.pofs.$;
             const inflect = getLatininflectArr(inflectArr, type);
             const shortDict = await getWikiLatin(fixedHead);
             const longDict = await getPerseusLatin(fixedHead);
-            let subObj = {};
-            let check = false; 
-            
-            if(inflect === undefined){ // if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
-                subObj = {
-                    headword: fixedHead, 
-                    type: type, 
-                    inflections: [
-                        {
-                            inflections: "uninflected"
-                        }
-                    ], 
-                    shortDef: shortDict,
-                    longDef: longDict
-                };
+            //console.log(inflect);
+            if(inflect === undefined){ // as before, if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
+                //console.log("UND");
+                return [{
+                        headword: fixedHead, 
+                        type: type, 
+                        inflections: [
+                            {
+                                inflection: 'uninflected'
+                            }
+                        ], 
+                        shortDef: shortDict,
+                        longDef: longDict
+                }];
             } else {
-                subObj = {
-                    headword: fixedHead, 
-                    type: type, 
+                return [{   
+                    headword: fixedHead,
+                    type: type,
                     inflections: inflect,
                     shortDef: shortDict,
                     longDef: longDict
-                };
-            }
-            
-            //console.log(setArr);
-            
-            for(let i = 0; i < retArr.length; i++) {
-                    if(JSON.stringify(subObj) === JSON.stringify(retArr[i])){
-                        check = true;
-                    }
-            }
-            if(check === false) {
-                
-                retArr[i] = (subObj);
-            }
+                }];
+            }  
         }
-        
-
-    return retArr;
-    } else {
-        const inflectArr = body.rest.entry.infl;
-        let headWord = body.rest.entry.dict.hdwd.$;
-        let fixedHead = headWord.replace(/[1-9]/g, '');
-        //console.log(fixedHead);
-        const type = body.rest.entry.dict.pofs.$;
-        const inflect = getLatininflectArr(inflectArr, type);
-        const shortDict = await getWikiLatin(fixedHead);
-        const longDict = await getPerseusLatin(fixedHead);
-        //console.log(inflect);
-        if(inflect === undefined){ // as before, if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
-            //console.log("UND");
-            return [{
-                    headword: fixedHead, 
-                    type: type, 
-                    inflections: [
-                        {
-                            inflection: 'uninflected'
-                        }
-                    ], 
-                    shortDef: shortDict,
-                    longDef: longDict
-            }];
-        } else {
-            return [{   
-                headword: fixedHead,
-                type: type,
-                inflections: inflect,
-                shortDef: shortDict,
-                longDef: longDict
-            }];
-        }  
+    } catch {
+        console.error ('Word Not Found');
+        return [{   
+            headword: 'Not Found',
+            type: 'Not Found',
+            inflections: [['Not Found']],
+            shortDef: 'Not Found',
+            longDef: 'Not Found'
+        }]
     }
+    
 };
 
 const getLatininflectArr = (inflectArr, type) => {

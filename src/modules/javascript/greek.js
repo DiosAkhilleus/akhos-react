@@ -6,100 +6,114 @@ const flatten = require('flat');
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     
     // fetches the given greek string from the morphology service
-    const greekData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
-    const dataOut = await greekData.json();
-    const body = dataOut.RDF.Annotation.Body;
-    //console.log(dataOut);
-    if(body === undefined){
-        //console.log('undefined');
-    }
+    try {
+        const greekData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
+        const dataOut = await greekData.json();
+        const body = dataOut.RDF.Annotation.Body;
+        //console.log(dataOut);
+        if(body === undefined){
+            throw new Error ('New Exception');
+        }
+        let type;
+        let returnArr = [];
+        if(Array.isArray(body)){ // if multiple possible definitions, returns morphology array for each
+            let subObj = {};
+            for(let i = 0; i < body.length; i++){
+                if(dataOut.RDF.Annotation.Body[i].rest.entry.infl[0] !== undefined){
+                    type = (dataOut.RDF.Annotation.Body[i].rest.entry.infl[0].pofs.$);
+                } else {
+                    type = dataOut.RDF.Annotation.Body[i].rest.entry.infl.pofs.$;
+                }
+                const inflections = dataOut.RDF.Annotation.Body[i].rest.entry.infl;
+                let headWord = dataOut.RDF.Annotation.Body[i].rest.entry.dict.hdwd.$;
+                let fixedHead = headWord.replace(/[1-9]/g, '');
+                const inflect = getGreekInflections(inflections, type);
+                const shortDict = await getWikiGreek(fixedHead);
+                const longDict = await getPerseusGreek(fixedHead);
 
-    //console.log(dataOut);
+                //console.log(shortDict);
 
-    let type;
-    let returnArr = [];
-    if(Array.isArray(body)){ // if multiple possible definitions, returns morphology array for each
-        let subObj = {};
-        for(let i = 0; i < body.length; i++){
-            if(dataOut.RDF.Annotation.Body[i].rest.entry.infl[0] !== undefined){
-                type = (dataOut.RDF.Annotation.Body[i].rest.entry.infl[0].pofs.$);
-            } else {
-                type = dataOut.RDF.Annotation.Body[i].rest.entry.infl.pofs.$;
+                if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
+                    subObj = {
+                                headword: fixedHead, 
+                                type: type, 
+                                inflections: [
+                                    {
+                                        dialect: "n/a",
+                                        inflections: "uninflected"
+                                    }
+                                ], 
+                                shortDef: shortDict,
+                                longDef: longDict
+                            };
+                } else {
+                    subObj = {
+                        headword: fixedHead, 
+                        type: type, 
+                        inflections: inflect,
+                        shortDef: shortDict,
+                        longDef: longDict
+                    };
+                }
+                returnArr[i] = subObj;
             }
-            const inflections = dataOut.RDF.Annotation.Body[i].rest.entry.infl;
-            let headWord = dataOut.RDF.Annotation.Body[i].rest.entry.dict.hdwd.$;
+            
+            return returnArr; //full array of word possibilities based on each possible root headword from input word
+
+        } else { //if there is only one root headword possible
+            
+            if(dataOut.RDF.Annotation.Body.rest.entry.infl[0] !== undefined){
+                type = (dataOut.RDF.Annotation.Body.rest.entry.infl[0].pofs.$);
+            } else {
+                type = dataOut.RDF.Annotation.Body.rest.entry.infl.pofs.$;
+            }
+        
+            const inflections = dataOut.RDF.Annotation.Body.rest.entry.infl;
+            let headWord = dataOut.RDF.Annotation.Body.rest.entry.dict.hdwd.$;
             let fixedHead = headWord.replace(/[1-9]/g, '');
             const inflect = getGreekInflections(inflections, type);
             const shortDict = await getWikiGreek(fixedHead);
             const longDict = await getPerseusGreek(fixedHead);
 
-            //console.log(shortDict);
-
-            if(inflect === undefined){ // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
-                subObj = {
-                            headword: fixedHead, 
-                            type: type, 
-                            inflections: [
-                                {
-                                    dialect: "n/a",
-                                    inflections: "uninflected"
-                                }
-                            ], 
-                            shortDef: shortDict,
-                            longDef: longDict
-                        };
+            if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
+                return [{
+                        headword: fixedHead, 
+                        type: type, 
+                        inflections: [
+                            {
+                                dialect: 'n/a',
+                                inflection: 'uninflected'
+                            }
+                        ], 
+                        shortDef: shortDict,
+                        longDef: longDict
+                    }];
             } else {
-                subObj = {
-                    headword: fixedHead, 
-                    type: type, 
-                    inflections: inflect,
-                    shortDef: shortDict,
-                    longDef: longDict
-                };
-            }
-            returnArr[i] = subObj;
+                return [{   
+                        headword: fixedHead,
+                        type: type,
+                        inflections: inflect,
+                        shortDef: shortDict,
+                        longDef: longDict
+                    }];
+            }   
         }
-        
-        return returnArr; //full array of word possibilities based on each possible root headword from input word
 
-    } else { //if there is only one root headword possible
-        
-        if(dataOut.RDF.Annotation.Body.rest.entry.infl[0] !== undefined){
-            type = (dataOut.RDF.Annotation.Body.rest.entry.infl[0].pofs.$);
-        } else {
-            type = dataOut.RDF.Annotation.Body.rest.entry.infl.pofs.$;
-        }
-    
-        const inflections = dataOut.RDF.Annotation.Body.rest.entry.infl;
-        let headWord = dataOut.RDF.Annotation.Body.rest.entry.dict.hdwd.$;
-        let fixedHead = headWord.replace(/[1-9]/g, '');
-        const inflect = getGreekInflections(inflections, type);
-        const shortDict = await getWikiGreek(fixedHead);
-        const longDict = await getPerseusGreek(fixedHead);
-
-        if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
-            return [{
-                    headword: fixedHead, 
-                    type: type, 
-                    inflections: [
-                        {
-                            dialect: 'n/a',
-                            inflection: 'uninflected'
-                        }
-                    ], 
-                    shortDef: shortDict,
-                    longDef: longDict
-                }];
-        } else {
-            return [{   
-                    headword: fixedHead,
-                    type: type,
-                    inflections: inflect,
-                    shortDef: shortDict,
-                    longDef: longDict
-                }];
-        }   
+    } catch {
+        console.error('Word Not Found');
+        return [{   
+            headword: 'Not Found',
+            type: 'Not Found',
+            inflections: [['Not Found']],
+            shortDef: 'Not Found',
+            longDef: 'Not Found'
+        }]
     }
+    
+
+    //console.log(dataOut);
+
+    
 };
 
 const getGreekInflections = (inflectArr, type) => { // returns an array in which each element is an object of the dialect type and inflection pattern
