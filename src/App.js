@@ -21,8 +21,9 @@ function App () {
   const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
 
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
-
+  const [loadingBar, setLoadingBar] = useState(true);
   useEffect(() => { // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
+    setLoadingBar(true);
     async function getGreekPhrase() {
     let arr = [];
     if (greekArr !== []) {
@@ -48,6 +49,7 @@ function App () {
   }, [greekArr])
 
   useEffect(() => { // this works exactly the same as the getGreekPhrase function in the previous hook.
+    setLoadingBar(true);
     async function getLatinPhrase() {
     let arr = [];
     if (latinArr !== []) {
@@ -73,6 +75,7 @@ function App () {
   }, [latinArr])
 
   useEffect(() => { // if the morphList change (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
+    setLoadingBar(false);
     if (language === 'la') {setDisplayArr(latinArr)}
     if (language === 'gr') {setDisplayArr(greekArr)}
   }, [morphList])
@@ -191,7 +194,7 @@ function App () {
             </div>
           ))}
         </div>
-        <br/>
+        <div className='loading' style={loadingBar ? {height: '50px'} : {height: '0'}}>{loadingBar ? 'Loading...' : ''}</div>
           {language === 'gr' ? (visible ? 
             <div id='translation'>
               <Mult 

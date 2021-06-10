@@ -103,7 +103,7 @@ table {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 15px;
     height:3rem;
     line-height:3rem;
     font-size:2rem;
@@ -123,4 +123,12 @@ table {
 
 .phrase-word:active {
     color:rgb(145, 145, 145);
+}
+
+.loading {
+    height: 50px;
+    text-align:center;
+    line-height: 3.5rem;
+    font-size:40px;
+    margin-top:20px;
 }
