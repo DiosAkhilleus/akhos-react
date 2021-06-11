@@ -156,7 +156,7 @@ function App () {
                 type="text" value={greek} 
                 onChange={(e) => {handleChange(e, 'greek')}} 
                 name="gr" 
-                placeholder="ἄνδρα"/>
+                placeholder="ἄνδρα μοι ἔννεπε μοῦσα"/>
               &nbsp;
               <Button 
                 variant="outlined" 
@@ -174,7 +174,7 @@ function App () {
                 type="text" 
                 value={latin} 
                 onChange={(e) => {handleChange(e, 'latin')}} 
-                placeholder="aequitas"/>
+                placeholder="arma virumque cano"/>
               &nbsp;
               <Button className='button' 
                 variant="outlined" 
