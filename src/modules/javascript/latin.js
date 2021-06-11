@@ -394,7 +394,7 @@ const getPerseusLatin = async (lemma) => {
                 allowedObj[key] = value.replace(/^\s/g, '');
                 allowedObj[key] = value.replace(/,\s$/, ':');
             }
-            console.log(allowedObj);
+            // console.log(allowedObj);
             let subArr = Object.entries(allowedObj);
             const endArr = subArr.map(([key, value]) => (value) )
             const endStr = endArr.join(', ');

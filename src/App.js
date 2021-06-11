@@ -18,10 +18,12 @@ function App () {
 
   const [visible, setVisible] = useState(false); // determines whether or not a morph is visible on the screen during mouseEnter and before mouseLeave
   const [active, setActive] = useState(false);  // determines wheter or not a morph is visible after a click, remaining even after mouseLeave
-  const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
-
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
   const [loadingBar, setLoadingBar] = useState(true);
+  
+  const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
+
+  
   useEffect(() => { // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
     setLoadingBar(true);
     async function getGreekPhrase() {
@@ -74,7 +76,7 @@ function App () {
     getLatinPhrase();
   }, [latinArr])
 
-  useEffect(() => { // if the morphList change (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
+  useEffect(() => { // if the morphList changes (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
     setLoadingBar(false);
     if (language === 'la') {setDisplayArr(latinArr)}
     if (language === 'gr') {setDisplayArr(greekArr)}
@@ -113,9 +115,9 @@ function App () {
   const handleLang = (e, lang) => { // handles user submission of either greek or latin forms
     if (lang === 'greek') {
       setLoaded(false);
-      setVisible(false)
-      setActiveIndex();
+      setVisible(false);
       setActive(false);
+      setActiveIndex();
       setLanguage('gr');
       let trimmed = greek.trim();
       let cleaned = trimmed.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
@@ -161,7 +163,7 @@ function App () {
                 color="primary" 
                 type="submit" 
                 classes={{label: 'sub-button'}}
-              >Submit Greek
+                >Submit Greek
               </Button>
           </form>
           <form 
@@ -174,7 +176,7 @@ function App () {
                 onChange={(e) => {handleChange(e, 'latin')}} 
                 placeholder="aequitas"/>
               &nbsp;
-              <Button 
+              <Button className='button' 
                 variant="outlined" 
                 color="secondary" 
                 type="submit" 
@@ -190,7 +192,8 @@ function App () {
               key={index} 
               onMouseDown={(e) => {setClicked(e, index)}} 
               onMouseEnter={(e) => {displayMorph(e, index)}} 
-              onMouseLeave={(e) => {stopDisplay(e, index)}}>{el}
+              onMouseLeave={(e) => {stopDisplay(e, index)}}
+              >{el}
             </div>
           ))}
         </div>

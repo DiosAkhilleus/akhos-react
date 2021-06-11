@@ -24,8 +24,6 @@ input {
 }
 
 .lang-input {
-    
-    
     height:24px;
     border-radius:4px;
     font-size:20px;
@@ -40,7 +38,7 @@ input {
     -ms-transition: all 0.30s ease-in-out;
     -o-transition: all 0.30s ease-in-out;
     transition: all 0.30s ease-in-out;
-
+    width: 30vw;
 }
 
 .lang-input:focus{
@@ -49,6 +47,11 @@ input {
     /* padding: 3px 0px 3px 3px; */
     /* margin: 5px 1px 3px 0px; */
     border: 1px solid rgba(81, 203, 238, 1);
+}
+
+.MuiButtonBase-root {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 #greek-label, #latin-label {
@@ -104,7 +107,7 @@ table {
     flex-direction: row;
     justify-content: center;
     margin-top: 15px;
-    height:3rem;
+    min-height:3rem;
     line-height:3rem;
     font-size:2rem;
     flex-wrap: wrap;
