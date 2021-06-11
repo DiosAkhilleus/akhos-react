@@ -49,11 +49,6 @@ input {
     border: 1px solid rgba(81, 203, 238, 1);
 }
 
-.MuiButtonBase-root {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
 #greek-label, #latin-label {
     display:inline-block;
     font-size:20px;
