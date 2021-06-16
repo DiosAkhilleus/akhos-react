@@ -1,14 +1,12 @@
 # Akhos
 
-This is a tool for students of Greek and Latin.
-
-Akhos uses both the Latin and Greek morphology tools from the Perseids project (https://www.perseids.org/), as well as the WikiMedia REST API and the Perseus Project XML API.
+A tool for students of Greek and Latin.
 
 Hosted Page Link: 
-        https://diosakhilleus.github.io/akhos-react/
+        https://akhos.net/
 
 ## Getting Started
-    To get started, load the page and type in your desired text in either Latin or Greek. 
+    To get started, load the page and type in your desired text in either Latin or Greek. Initial load time may take longer than expected due to loading built-in dictionary files. 
 
     If you don't know either language, here are a few example phrases for you to copy and paste.
 
@@ -30,3 +28,10 @@ Hosted Page Link:
 <br>
 
 ## — DiosAkhilleus
+
+#### 
+    Credits: 
+    Lewis & Short JSON file compiled from the work of https://github.com/IohannesArnold to turn Perseus's Latin XML Dictionary into JSON. Original Credit for XML dictionary goes to https://www.perseus.tufts.edu 
+
+    LSJ JSON file obtained by way of https://github.com/perseids-project
+
