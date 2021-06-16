@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import getGreekMorph from './modules/javascript/greek';
 import getLatinMorph from './modules/javascript/latin';
 import Mult from './components/Mult';
+import { useMediaQuery } from 'react-responsive';
 import {Button} from '@material-ui/core';
 import './App.css';
 
@@ -17,7 +18,7 @@ function App () {
   const [morphList, setMorphList] = useState([]); // an array of morphs corresponding to each item in either greekArr or latinArr, depending on which the user submitted
 
   const [visible, setVisible] = useState(false); // determines whether or not a morph is visible on the screen during mouseEnter and before mouseLeave
-  const [active, setActive] = useState(false);  // determines wheter or not a morph is visible after a click, remaining even after mouseLeave
+  const [active, setActive] = useState(false);  // determines whetηer or not a morph is visible after a click, remaining even after mouseLeave
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
   const [loadingBar, setLoadingBar] = useState(true);
   
@@ -82,6 +83,8 @@ function App () {
     if (language === 'gr') {setDisplayArr(greekArr)}
   }, [morphList])
 
+  const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' })
+
   const displayMorph = (e, index) => { // this is what sets whether or not the morphs may display on the page. Only works when certain conditions are satisfied.
     if (index !== activeIndex && loaded === true) {
       setActiveIndex(index);
@@ -97,7 +100,8 @@ function App () {
   }
 
   const stopDisplay = (e, index) => { // controls the removal of the display on mouseLeave from one of the words of the displayed string
-    if (active !== true && loaded === true) {
+    if (active !== true && loaded === true && !isMobile) {
+      console.log(e.target);
       setVisible(false)
       setActiveIndex();
     }
