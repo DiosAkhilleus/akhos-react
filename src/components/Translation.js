@@ -1,4 +1,4 @@
-import '../modules/css/translation.css';
+import '../App.css';
 import ShowMoreText from 'react-show-more-text';
 
 const Translation = (props) => {
