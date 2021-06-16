@@ -414,18 +414,35 @@ const getPerseusLatin = async (lemma) => {
 };
 
 const getLocalDict = (lemma) => {
-    let dictObj = latindict[lemma];
-    let dictSense = dictObj.senses;
-    let combined = [];
-    if (dictSense.length !== undefined && dictSense.length > 0) {
-        for (let i = 0; i < dictSense.length; i++) {
-            let newArr = combined.concat(dictSense[i]);
-            combined = newArr;
+    if (!latindict[lemma]) { 
+        if (latindict[`${lemma}1`]) {
+            let combined = [];
+                let dictSense = latindict[`${lemma}1`].senses;
+                if (dictSense.length !== undefined && dictSense.length > 0) {
+                    for (let i = 0; i < dictSense.length; i++) {
+                        let newArr = combined.concat(dictSense[i]);
+                        combined = newArr;
+                    }
+                }
+            let dictString = combined.join(' ');
+            return dictString;
+        } else {
+            return "Definition Not Found";
         }
+    } else {
+        let dictObj = latindict[lemma];
+        let dictSense = dictObj.senses;
+        let combined = [];
+        if (dictSense.length !== undefined && dictSense.length > 0) {
+            for (let i = 0; i < dictSense.length; i++) {
+                let newArr = combined.concat(dictSense[i]);
+                combined = newArr;
+            }
+        }
+        let dictString = combined.join(' ');
+    
+        return dictString;
     }
-    let dictString = combined.join(' ');
-
-    return dictString;
 };
 
 
