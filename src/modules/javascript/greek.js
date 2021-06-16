@@ -1,10 +1,12 @@
 import {  greekToBetaCode  } from 'beta-code-js'; 
 const convert = require('xml-js');
 const flatten = require('flat');
+const greekdict = require('./json/lsj.json');
 
 
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
-    
+    // console.log(greekdict.λύω);
+    // console.log(typeof(greekdict.λύω));
     // fetches the given greek string from the morphology service
     try {
         const greekData = await fetch(`https://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=${lemma}`, {mode: 'cors'});
@@ -29,7 +31,8 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
                 let fixedHead = headWord.replace(/[1-9]/g, '');
                 const inflect = getGreekInflections(inflections, type);
                 const shortDict = await getWikiGreek(fixedHead);
-                const longDict = await getPerseusGreek(fixedHead);
+                const longDict = getLocalDict(fixedHead);
+                //const longDict = await getPerseusGreek(fixedHead);
 
                 //console.log(shortDict);
 
@@ -73,7 +76,8 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
             let fixedHead = headWord.replace(/[1-9]/g, '');
             const inflect = getGreekInflections(inflections, type);
             const shortDict = await getWikiGreek(fixedHead);
-            const longDict = await getPerseusGreek(fixedHead);
+            const longDict = getLocalDict(fixedHead);
+            //const longDict = await getPerseusGreek(fixedHead);
 
             if(inflect === undefined){ // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
                 return [{
@@ -109,11 +113,7 @@ const getGreekMorph = async (lemma) => { //returns a full array of relevant info
             longDef: 'Not Found'
         }]
     }
-    
-
     //console.log(dataOut);
-
-    
 };
 
 const getGreekInflections = (inflectArr, type) => { // returns an array in which each element is an object of the dialect type and inflection pattern
@@ -523,5 +523,14 @@ const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus
         return joined;
     }
 };
+
+const getLocalDict = (lemma) => {
+    let dictForm = greekdict[lemma];
+    let cleaned = dictForm.replace(/<(.*?)>/g, '').replace(/&nbsp;/g, ' ');
+
+    return cleaned;
+};
+
+
 
 export default getGreekMorph;

@@ -1,6 +1,6 @@
 const convert = require('xml-js');
 const flatten = require('flat');
-
+const latindict = require('./json/lewis-short.json');
 
 const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
     try {
@@ -21,7 +21,8 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
                 const type = body[i].rest.entry.dict.pofs.$;
                 const inflect = getLatininflectArr(inflectArr, type);
                 const shortDict = await getWikiLatin(fixedHead);
-                const longDict = await getPerseusLatin(fixedHead);
+                const longDict = getLocalDict(fixedHead);
+                // const longDict = await getPerseusLatin(fixedHead);
                 let subObj = {};
                 let check = false; 
                 
@@ -70,7 +71,8 @@ const getLatinMorph = async (lemma) => { //returns a full array of relevant info
             const type = body.rest.entry.dict.pofs.$;
             const inflect = getLatininflectArr(inflectArr, type);
             const shortDict = await getWikiLatin(fixedHead);
-            const longDict = await getPerseusLatin(fixedHead);
+            const longDict = getLocalDict(fixedHead);
+            // const longDict = await getPerseusLatin(fixedHead);
             //console.log(inflect);
             if(inflect === undefined){ // as before, if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
                 //console.log("UND");
@@ -409,6 +411,21 @@ const getPerseusLatin = async (lemma) => {
         
     }
 
+};
+
+const getLocalDict = (lemma) => {
+    let dictObj = latindict[lemma];
+    let dictSense = dictObj.senses;
+    let combined = [];
+    if (dictSense.length !== undefined && dictSense.length > 0) {
+        for (let i = 0; i < dictSense.length; i++) {
+            let newArr = combined.concat(dictSense[i]);
+            combined = newArr;
+        }
+    }
+    let dictString = combined.join(' ');
+
+    return dictString;
 };
 
 

@@ -15,6 +15,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
+    "react-show-more-text": "^1.4.6",
     "stream-browserify": "^2.0.2",
     "timers-browserify": "^2.0.12",
     "web-vitals": "^1.0.1",

@@ -1,6 +1,10 @@
 import '../modules/css/translation.css';
+import ShowMoreText from 'react-show-more-text';
 
 const Translation = (props) => {
+    const executeOnClick = (isExpanded) => {
+        console.log(isExpanded);
+    }
 
     const format = (item, i) => { // maps through the inflection array and returns a div containing each inflection 
 
@@ -26,7 +30,17 @@ const Translation = (props) => {
             <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div>
             <div>{props.inflections.map((item, i) => format(item, i))}</div>
             <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div><br/>
-            <div className="long">{props.long}</div>
+            <ShowMoreText 
+                className="long"
+                anchorClass='anchor-class'
+                lines={3}
+                more='Show more'
+                less='Show less'
+                onClick={executeOnClick}
+                expanded={false}
+            >
+                {props.long}
+            </ShowMoreText>
             <br/>
             <br/>
         </div>    

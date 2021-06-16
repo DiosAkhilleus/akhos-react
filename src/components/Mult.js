@@ -12,7 +12,7 @@ const Mult = ({ input, provided, lang }) => {
                     type={el.type.charAt(0).toUpperCase() + el.type.slice(1)} 
                     inflections={el.inflections} 
                     short={`Wiki Definition: ${el.shortDef}`} 
-                    long={(el.lang === 'la') ? `Lewis & Short Entry: ${el.longDef}` : `Liddell Scott Entry: ${el.longDef}`} 
+                    long={(lang === 'la') ? `Lewis & Short Entry: ${el.longDef}` : `Liddell Scott Entry: ${el.longDef}`} 
                 />
             )})}
         </>
