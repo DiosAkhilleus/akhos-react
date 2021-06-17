@@ -21,10 +21,12 @@ function App () {
   const [active, setActive] = useState(false);  // determines whetηer or not a morph is visible after a click, remaining even after mouseLeave
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
   const [loadingBar, setLoadingBar] = useState(true);
-  
+  const [expanded, setExpanded] = useState(false);
+
   const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
 
-  
+  const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' })
+
   useEffect(() => { // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
     setLoadingBar(true);
     async function getGreekPhrase() {
@@ -83,10 +85,13 @@ function App () {
     if (language === 'gr') {setDisplayArr(greekArr)}
   }, [morphList])
 
-  const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' })
+  useEffect(() => {
+    console.log(expanded);
+  }, [expanded])
 
-  const displayMorph = (e, index) => { // this is what sets whether or not the morphs may display on the page. Only works when certain conditions are satisfied.
+  const displayMorph = (e, index) => { // this is what sets whether or not the morphs may display on the page. Only works when certain conditions are satisfied.  
     if (index !== activeIndex && loaded === true) {
+      setExpanded(false);
       setActiveIndex(index);
       setVisible(true);
       setActive(false);
@@ -208,6 +213,8 @@ function App () {
                 input={morphList[activeIndex]} 
                 provided={greekArr[activeIndex]} 
                 lang={language}
+                expanded={expanded}
+                setExpanded = {setExpanded}
               />
             </div> : '') : ''}
           {language === 'la' ? (visible ? 
@@ -216,6 +223,8 @@ function App () {
                 input={morphList[activeIndex]} 
                 provided={latinArr[activeIndex]} 
                 lang={language}
+                expanded={expanded}
+                setExpanded = {setExpanded}
               />
             </div> : '') : ''}
           <div id='greek'></div>

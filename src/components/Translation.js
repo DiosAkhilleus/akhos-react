@@ -1,10 +1,7 @@
 import '../App.css';
 import ShowMoreText from 'react-show-more-text';
 
-const Translation = (props) => {
-    const executeOnClick = (isExpanded) => {
-        console.log(isExpanded);
-    }
+const Translation = ({key, provided, head, type, inflections, short, long, expanded, executeOnClick}) => {
 
     const format = (item, i) => { // maps through the inflection array and returns a div containing each inflection 
 
@@ -23,13 +20,13 @@ const Translation = (props) => {
     }
     return (
         <div className='trans-container'>
-            <h2 className="title">{props.provided}</h2> 
-            <div className="type">{props.type}</div><br/>
-            <div className="head">{props.head}</div><br/>
-            <div className="short">{props.short}</div><br/>
-            <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div>
-            <div>{props.inflections.map((item, i) => format(item, i))}</div>
-            <div>{(props.provided !== '') ? '––––––––––––––––––––' : ''}</div><br/>
+            <h2 className="title">{provided}</h2> 
+            <div className="type">{type}</div><br/>
+            <div className="head">{head}</div><br/>
+            <div className="short">{short}</div><br/>
+            <div>{(provided !== '') ? '––––––––––––––––––––' : ''}</div>
+            <div>{inflections.map((item, i) => format(item, i))}</div>
+            <div>{(provided !== '') ? '––––––––––––––––––––' : ''}</div><br/>
             <ShowMoreText 
                 className="long"
                 anchorClass='anchor-class'
@@ -37,9 +34,9 @@ const Translation = (props) => {
                 more='Show more'
                 less='Show less'
                 onClick={executeOnClick}
-                expanded={false}
+                expanded={expanded}
             >
-                {props.long}
+                {long}
             </ShowMoreText>
             <br/>
             <br/>
