@@ -155,7 +155,7 @@ function App () {
 
     return (
       <div>
-        <div id="form-container">
+        <div id="form-container"> contains
           <form 
             className="lang-form" 
             onSubmit={(e) => {handleLang(e, 'greek')}}>

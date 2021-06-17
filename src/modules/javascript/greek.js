@@ -1,8 +1,7 @@
-import {  greekToBetaCode  } from 'beta-code-js'; 
-const convert = require('xml-js');
-const flatten = require('flat');
+import {  greekToBetaCode  } from 'beta-code-js'; // previously used in getPerseusGreek() for Perseus's awful beta-code Greek entry
+const convert = require('xml-js'); // previously used to convert XML from Perseus into poorly-formatted JSON
+const flatten = require('flat'); // previously used to clean the poorly-formatted JSON from Perseus into slightly better formatted JSON, but still bad
 const greekdict = require('./json/lsj.json');
-
 
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
     // console.log(greekdict.λύω);
@@ -433,98 +432,99 @@ const getWikiGreek = async (lemma) => { // fetches the wiktionary definition for
     }
 };
 
-const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus API and formats it to a human-readable state
-    const beta = greekToBetaCode(lemma);
+// deprecated function that retrieved dictionary information from perseus.tufts.edu
+// const getPerseusGreek = async (lemma) => { // retrieves the XML from the Perseus API and formats it to a human-readable state
+//     const beta = greekToBetaCode(lemma);
     
-    let dataAsJson = {};
-    const data = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}`);
-    const textData = await data.text();
+//     let dataAsJson = {};
+//     const data = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}`);
+//     const textData = await data.text();
 
-    if (textData.indexOf('An Error Occurred') > -1) {
-        const data1 = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}1`);
-        const textData1 = await data1.text();
-        if (textData1.indexOf('An Error Occurred') > -1) {
-            return "Can't Find Entry";
-        } else {
-            dataAsJson = JSON.parse(convert.xml2json(textData1, {compact: true, spaces: 4}));
-            const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
-        let defArray = [];
-        for(let i = 0; i < lower.length; i++){
-            const flatter = flatten(lower[i]);
-            //console.log(flatter);
-            let regex1 = /^_text.0/;
-            let regex2 = /_text$/
-            let regex3 = /^foreign./;
-            let regex4 = /^usg./;
+//     if (textData.indexOf('An Error Occurred') > -1) {
+//         const data1 = await fetch(`https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus%3Atext%3A1999.04.0058%3Aentry%3D${beta}1`);
+//         const textData1 = await data1.text();
+//         if (textData1.indexOf('An Error Occurred') > -1) {
+//             return "Can't Find Entry";
+//         } else {
+//             dataAsJson = JSON.parse(convert.xml2json(textData1, {compact: true, spaces: 4}));
+//             const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
+//         let defArray = [];
+//         for(let i = 0; i < lower.length; i++){
+//             const flatter = flatten(lower[i]);
+//             //console.log(flatter);
+//             let regex1 = /^_text.0/;
+//             let regex2 = /_text$/
+//             let regex3 = /^foreign./;
+//             let regex4 = /^usg./;
 
-            const asArray = Object.entries(flatter);
-            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
-            const allowedObj = Object.fromEntries(allowedArr);
+//             const asArray = Object.entries(flatter);
+//             const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key)) && (value !== ", " && value !== "; " && value !== ":"))));
+//             const allowedObj = Object.fromEntries(allowedArr);
     
-            for (const [key, value] of Object.entries(allowedObj)) {
-                allowedObj[key] = value.replace(/^\s/g, '');
-                allowedObj[key] = value.replace(/,\s$/, ':');
-            }
+//             for (const [key, value] of Object.entries(allowedObj)) {
+//                 allowedObj[key] = value.replace(/^\s/g, '');
+//                 allowedObj[key] = value.replace(/,\s$/, ':');
+//             }
     
-            defArray.push(allowedObj);
-        }
+//             defArray.push(allowedObj);
+//         }
         
-        let joined = '';
-        for(let i = 0; i < defArray.length; i++) {
-            let subArr = Object.entries(defArray[i]);
-            const endArr = subArr.map(([key, value]) => (value) )
-            const endStr = endArr.join(', ');
+//         let joined = '';
+//         for(let i = 0; i < defArray.length; i++) {
+//             let subArr = Object.entries(defArray[i]);
+//             const endArr = subArr.map(([key, value]) => (value) )
+//             const endStr = endArr.join(', ');
             
-            joined += endStr;
-        }
-        return joined;
-        } 
-    } else {
-        dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
+//             joined += endStr;
+//         }
+//         return joined;
+//         } 
+//     } else {
+//         dataAsJson = JSON.parse(convert.xml2json(textData, {compact: true, spaces: 4}));
         
-        const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
+//         const lower = dataAsJson["TEI.2"].text.body.div0.entry.sense;
         
-        let defArray = [];
+//         let defArray = [];
         
-        for(let i = 0; i < lower.length; i++){
+//         for(let i = 0; i < lower.length; i++){
             
-            const flatter = flatten(lower[i]);
+//             const flatter = flatten(lower[i]);
             
-            //console.log(flatter);
-            let regex1 = /^_text.0/;
-            let regex2 = /_text$/
-            let regex3 = /^foreign./;
-            let regex4 = /^usg./;
+//             //console.log(flatter);
+//             let regex1 = /^_text.0/;
+//             let regex2 = /_text$/
+//             let regex3 = /^foreign./;
+//             let regex4 = /^usg./;
 
-            const asArray = Object.entries(flatter);
+//             const asArray = Object.entries(flatter);
             
-            const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key) && value !== ", " && value !== ":"))));
-            // (    && value !== "; ") 
+//             const allowedArr = asArray.filter(([key, value]) => (((regex1.test(key) || regex2.test(key)) && (!regex3.test(key) && !regex4.test(key) && value !== ", " && value !== ":"))));
+//             // (    && value !== "; ") 
             
-            const allowedObj = Object.fromEntries(allowedArr);
+//             const allowedObj = Object.fromEntries(allowedArr);
             
-            for (const [key, value] of Object.entries(allowedObj)) {
-                allowedObj[key] = value.replace(/^\s/g, '');
-                allowedObj[key] = value.replace(/,\s$/, ':');
-            }
+//             for (const [key, value] of Object.entries(allowedObj)) {
+//                 allowedObj[key] = value.replace(/^\s/g, '');
+//                 allowedObj[key] = value.replace(/,\s$/, ':');
+//             }
     
-            defArray.push(allowedObj);
-        }
+//             defArray.push(allowedObj);
+//         }
         
-        let joined = '';
-        for(let i = 0; i < defArray.length; i++) {
-            let subArr = Object.entries(defArray[i]);
-            const endArr = subArr.map(([key, value]) => (value) )
-            const endStr = endArr.join(', ');
+//         let joined = '';
+//         for(let i = 0; i < defArray.length; i++) {
+//             let subArr = Object.entries(defArray[i]);
+//             const endArr = subArr.map(([key, value]) => (value) )
+//             const endStr = endArr.join(', ');
             
-            joined += endStr;
-        }
-        // console.log(joined);
-        return joined;
-    }
-};
+//             joined += endStr;
+//         }
+//         // console.log(joined);
+//         return joined;
+//     }
+// };
 
-const getLocalDict = (lemma) => {
+const getLocalDict = (lemma) => { // retrieves dictionary information from the local Greek lexicon file
     let dictForm = greekdict[lemma];
     let cleaned = dictForm.replace(/<(.*?)>/g, '').replace(/&nbsp;/g, ' ');
 
