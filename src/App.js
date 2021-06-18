@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import getGreekMorph from './modules/javascript/greek';
 import getLatinMorph from './modules/javascript/latin';
 import Mult from './components/Mult';
-import { useMediaQuery } from 'react-responsive';
 import {Button} from '@material-ui/core';
 import './App.css';
+// import { useMediaQuery } from 'react-responsive';
 
 function App () {
 
@@ -18,14 +18,13 @@ function App () {
   const [morphList, setMorphList] = useState([]); // an array of morphs corresponding to each item in either greekArr or latinArr, depending on which the user submitted
 
   const [visible, setVisible] = useState(false); // determines whether or not a morph is visible on the screen during mouseEnter and before mouseLeave
-  const [active, setActive] = useState(false);  // determines whetηer or not a morph is visible after a click, remaining even after mouseLeave
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
   const [loadingBar, setLoadingBar] = useState(true); // the status of whether or not the loading bar is visible... only appears when a phrase is loading
   const [expanded, setExpanded] = useState(false); // whether or not the dictionary entry is in its expanded form
 
   const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
 
-  const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' }) // media query to determine if the user is on a mobile device, mainly to prevent issues when clicking on the "Show more" tab in the dictionary entries
+  // const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' }) // media query to determine if the user is on a mobile device, mainly to prevent issues when clicking on the "Show more" tab in the dictionary entries
 
   useEffect(() => { // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
     setLoadingBar(true);
@@ -104,7 +103,6 @@ function App () {
       setExpanded(false);
       setActiveIndex(index);
       setVisible(true);
-      setActive(false);
     }
   }
 
@@ -118,35 +116,24 @@ function App () {
   }
 
   const handleLang = (e, lang) => { // handles user submission of either greek or latin forms
+    setLoaded(false);
+    setVisible(false);
+    setActiveIndex();
+    let inputPhrase;
     if (lang === 'greek') {
-      setLoaded(false); 
-      setVisible(false);
-      setActive(false);
-      setActiveIndex();
       setLanguage('gr');
-      let trimmed = greek.trim();
-      let cleaned = trimmed.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,""); // cleaning of the input string, to remove any punctuation that would mess up morph retrieval
-      let cleanedArr = cleaned.split(' ');
-      for (let i = 0; i < cleanedArr.length; i++) {
-        cleanedArr[i].trim();
-      }
-      setGreekArr(cleanedArr);
+      inputPhrase = greek.trim();
     }
     if (lang === 'latin') {
-      setLoaded(false);
-      setVisible(false)
-      setActiveIndex();
-      setActive(false);
       setLanguage('la');
-      let trimmed = latin.trim();
-      let cleaned = trimmed.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ''); // same kind of cleaning as in the greek section
-      let cleanedArr = cleaned.split(' ');
-      for (let i = 0; i < cleanedArr.length; i++) {
-        cleanedArr[i].trim()
-      }
-      setLatinArr(cleanedArr);
-      //lat(latin)
+      inputPhrase = latin.trim();
     }
+    let cleanedInput = inputPhrase.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ''); // cleaning of the input string, to remove any punctuation that would mess up morph retrieval
+    let cleanedInputArr = cleanedInput.split(' ');
+    for (let i = 0; i < cleanedInputArr.length; i++) {
+      cleanedInputArr[i].trim();
+    }
+    lang === 'latin' ? setLatinArr(cleanedInputArr) : setGreekArr(cleanedInputArr); 
     e.preventDefault();
   }
 

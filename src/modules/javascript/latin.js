@@ -1,5 +1,5 @@
-const convert = require('xml-js'); // preiously converted XML from perseus into JSON, probably unnecessary now
-const flatten = require('flat'); // previously flattened terrible JSON into only halfway-terrible JSON
+// const convert = require('xml-js'); // preiously converted XML from perseus into JSON, probably unnecessary now
+// const flatten = require('flat'); // previously flattened terrible JSON into only halfway-terrible JSON
 const latindict = require('./json/lewis-short.json');
 
 const getLatinMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
@@ -418,13 +418,13 @@ const getLocalDict = (lemma) => { // retrieves the correct dictionary entry from
     if (!latindict[lemma]) { 
         if (latindict[`${lemma}1`]) {
             let combined = [];
-                let dictSense = latindict[`${lemma}1`].senses;
-                if (dictSense.length !== undefined && dictSense.length > 0) {
-                    for (let i = 0; i < dictSense.length; i++) {
-                        let newArr = combined.concat(dictSense[i]);
-                        combined = newArr;
-                    }
+            let dictSense = latindict[`${lemma}1`].senses;
+            if (dictSense.length !== undefined && dictSense.length > 0) {
+                for (let i = 0; i < dictSense.length; i++) {
+                    let newArr = combined.concat(dictSense[i]);
+                    combined = newArr;
                 }
+            }
             let dictString = combined.join(' ');
             return dictString;
         } else {

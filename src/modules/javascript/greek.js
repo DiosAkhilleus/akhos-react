@@ -1,6 +1,6 @@
-import {  greekToBetaCode  } from 'beta-code-js'; // previously used in getPerseusGreek() for Perseus's awful beta-code Greek entry
-const convert = require('xml-js'); // previously used to convert XML from Perseus into poorly-formatted JSON
-const flatten = require('flat'); // previously used to clean the poorly-formatted JSON from Perseus into slightly better formatted JSON, but still bad
+// import {  greekToBetaCode  } from 'beta-code-js'; // previously used in getPerseusGreek() for Perseus's awful beta-code Greek entry
+// const convert = require('xml-js'); // previously used to convert XML from Perseus into poorly-formatted JSON
+// const flatten = require('flat'); // previously used to clean the poorly-formatted JSON from Perseus into slightly better formatted JSON, but still bad
 const greekdict = require('./json/lsj.json');
 
 const getGreekMorph = async (lemma) => { //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
