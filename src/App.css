@@ -6,6 +6,8 @@
 
 body{
     background-color:rgb(255, 247, 237);
+    margin-left: 16px;
+    margin-right: 16px;
 }
 #greek, #latin{
     display:none;
@@ -214,6 +216,20 @@ table {
 }
 
 @media only screen and (max-width: 600px) {
+
+    .MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedSecondary {
+        color:rgb(152, 19, 46);
+        border-color:rgb(152, 19, 46);
+        margin-top:5px;
+        margin-left:0;
+    }
+    
+    .MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary {
+        margin-top:5px;
+        margin-left:0;
+        color:rgb(20, 85, 73);
+        border-color:rgb(20, 85, 73);
+    }
     
     .lang-form {
         display:flex;
@@ -296,10 +312,12 @@ table {
         color:rgb(152, 19, 46);
         border-color:rgb(152, 19, 46);
         margin-top:5px;
+        margin-left:0;
     }
     
     .MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary {
         margin-top:5px;
+        margin-left:0;
         color:rgb(20, 85, 73);
         border-color:rgb(20, 85, 73);
     }
