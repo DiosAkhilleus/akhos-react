@@ -29,7 +29,33 @@ function App () {
 
   useEffect(() => { // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
     setLoadingBar(true);
-    async function getGreekPhrase() {
+    
+    getGreekPhrase();
+  }, [greekArr])
+
+  useEffect(() => { // this works exactly the same as the getGreekPhrase function in the previous hook.
+    setLoadingBar(true);
+    getLatinPhrase();
+  }, [latinArr])
+
+  useEffect(() => { // if the morphList changes (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
+    setLoadingBar(false);
+    if (language === 'la') {setDisplayArr(latinArr)}
+    if (language === 'gr') {setDisplayArr(greekArr)}
+  }, [morphList])
+
+  useEffect(() => { // testing how to update the expanded property correctly
+    console.log(expanded);
+  }, [expanded])
+
+  useEffect(() => {
+    if (loaded === true) {
+      setActiveIndex(0);
+      setVisible(true);
+    }
+  }, [loaded]);
+
+  const getGreekPhrase = async() => {
     let arr = [];
     if (greekArr !== []) {
       for (let i = 0; i < greekArr.length; i++) {
@@ -49,13 +75,9 @@ function App () {
         }
         setLoaded(true);
       }
-    }
-    getGreekPhrase();
-  }, [greekArr])
+  }
 
-  useEffect(() => { // this works exactly the same as the getGreekPhrase function in the previous hook.
-    setLoadingBar(true);
-    async function getLatinPhrase() {
+  const getLatinPhrase = async() => {
     let arr = [];
     if (latinArr !== []) {
       for (let i = 0; i < latinArr.length; i++) {
@@ -75,39 +97,14 @@ function App () {
         } else {setMorphList(latWord);}
         setLoaded(true);
       }
-    }
-    getLatinPhrase();
-  }, [latinArr])
-
-  useEffect(() => { // if the morphList changes (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
-    setLoadingBar(false);
-    if (language === 'la') {setDisplayArr(latinArr)}
-    if (language === 'gr') {setDisplayArr(greekArr)}
-  }, [morphList])
-
-  useEffect(() => { // testing how to update the expanded property correctly
-    console.log(expanded);
-  }, [expanded])
+  }
 
   const displayMorph = (e, index) => { // this is what sets whether or not the morphs may display on the page. Only works when certain conditions are satisfied.  
-    if (index !== activeIndex && loaded === true) {
+    if (loaded === true) {
       setExpanded(false);
       setActiveIndex(index);
       setVisible(true);
       setActive(false);
-    }
-  }
-
-  const setClicked = (e, index) => { // if any word is clicked, this sets the morph for that word to remain on the screen even after mouseLeave
-    setActiveIndex(index);
-    setVisible(true);
-    setActive(true);
-  }
-
-  const stopDisplay = (e, index) => { // controls the removal of the display on mouseLeave from one of the words of the displayed string
-    if (active !== true && loaded === true && !isMobile) {
-      setVisible(false)
-      setActiveIndex();
     }
   }
 
@@ -196,9 +193,8 @@ function App () {
             <div 
               className='phrase-word' 
               key={index} 
-              onMouseDown={(e) => {setClicked(e, index)}} 
+              style={index === activeIndex ? language === 'gr' ? {color: 'rgb(20, 85, 73)'} : {color: 'rgb(152, 19, 46)'} : {color:'black'}}
               onMouseEnter={(e) => {displayMorph(e, index)}} 
-              onMouseLeave={(e) => {stopDisplay(e, index)}}
               >{el}
             </div>
           ))}
