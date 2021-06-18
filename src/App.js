@@ -182,6 +182,7 @@ function App () {
               key={index} 
               style={index === activeIndex ? language === 'gr' ? {color: 'rgb(20, 85, 73)'} : {color: 'rgb(152, 19, 46)'} : {color:'black'}}
               onMouseEnter={(e) => {displayMorph(e, index)}} 
+              onMouseDown={(e) => {displayMorph(e, index)}}
               >{el}
             </div>
           ))}
