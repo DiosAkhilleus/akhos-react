@@ -2,17 +2,19 @@ const express = require("express");
 const fs = require("node:fs");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const port = 8004;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/dict/:lang/", async (req, res) => {
+app.post("/dict/:lang/", async (req, res) => {
   const { lang } = req.params;
-  const headwordList = req.body.headwordList;
+  const headwordList = req.body.data.headwordList;
   console.log(headwordList);
   // const regexFilter = new RegExp(`^${lemma}\\d?$`, "i");
 

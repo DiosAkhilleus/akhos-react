@@ -1,17 +1,7 @@
 // import {  greekToBetaCode  } from 'beta-code-js'; // previously used in getPerseusGreek() for Perseus's awful beta-code Greek entry
 // const convert = require('xml-js'); // previously used to convert XML from Perseus into poorly-formatted JSON
 // const flatten = require('flat'); // previously used to clean the poorly-formatted JSON from Perseus into slightly better formatted JSON, but still bad
-
-let greekdict;
-
-fetch("/json/lsj.json")
-  .then((res) => {
-    greekdict = res;
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
+import axios from "axios";
 const getGreekMorph = async (lemma) => {
   //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and LSJ Def
   // console.log(greekdict.λύω);
@@ -90,7 +80,7 @@ const getGreekMorph = async (lemma) => {
       let fixedHead = headWord.replace(/[1-9]/g, "");
       const inflect = getGreekInflections(inflections, type);
       const shortDict = await getWikiGreek(fixedHead);
-      const longDict = getLocalDict(fixedHead);
+      const longDict = await getGreekDict(fixedHead);
       //const longDict = await getPerseusGreek(fixedHead);
 
       if (inflect === undefined) {
@@ -479,12 +469,16 @@ const getWikiGreek = async (lemma) => {
   }
 };
 
-const getLocalDict = (lemma) => {
+const getGreekDict = async (lemma) => {
   // retrieves dictionary information from the local Greek lexicon file
-  let dictForm = greekdict[lemma];
-  let cleaned = dictForm.replace(/<(.*?)>/g, "").replace(/&nbsp;/g, " ");
-
-  return cleaned;
+  const dictForm = await axios.post("http://localhost:8004/dict/greek", {
+    data: {
+      headwordList: [[lemma]],
+    },
+  });
+  // let dictForm = greekdict[lemma];
+  // let cleaned = dictForm.replace(/<(.*?)>/g, "").replace(/&nbsp;/g, " ");
+  return dictForm.data[0];
 };
 
 export default getGreekMorph;

@@ -1,7 +1,6 @@
 // const convert = require('xml-js'); // preiously converted XML from perseus into JSON, probably unnecessary now
 // const flatten = require('flat'); // previously flattened terrible JSON into only halfway-terrible JSON
-const latindict = await fetch("./json/lewis-short.json");
-
+import axios from "axios";
 const getLatinMorph = async (lemma) => {
   //returns a full array of relevant information relating to the morphology, including the headword, part of speech, inflection possibilities, Wiktionary Def, and Lewis & Short entry
   try {
@@ -15,7 +14,6 @@ const getLatinMorph = async (lemma) => {
     if (body === undefined) {
       throw new Error("New Exception");
     }
-    //console.log(dataOut);
     if (Array.isArray(body)) {
       let retArr = [];
       for (let i = 0; i < body.length; i++) {
@@ -25,7 +23,7 @@ const getLatinMorph = async (lemma) => {
         const type = body[i].rest.entry.dict.pofs.$;
         const inflect = getLatininflectArr(inflectArr, type);
         const shortDict = await getWikiLatin(fixedHead);
-        const longDict = getLocalDict(fixedHead);
+        const longDict = await getLatinDict(fixedHead);
         // const longDict = await getPerseusLatin(fixedHead);
         let subObj = {};
         let check = false;
@@ -53,8 +51,6 @@ const getLatinMorph = async (lemma) => {
           };
         }
 
-        //console.log(setArr);
-
         for (let i = 0; i < retArr.length; i++) {
           if (JSON.stringify(subObj) === JSON.stringify(retArr[i])) {
             check = true;
@@ -64,22 +60,19 @@ const getLatinMorph = async (lemma) => {
           retArr[i] = subObj;
         }
       }
-
       return retArr;
     } else {
       const inflectArr = body.rest.entry.infl;
       let headWord = body.rest.entry.dict.hdwd.$;
       let fixedHead = headWord.replace(/[1-9]/g, "");
-      //console.log(fixedHead);
       const type = body.rest.entry.dict.pofs.$;
       const inflect = getLatininflectArr(inflectArr, type);
       const shortDict = await getWikiLatin(fixedHead);
-      const longDict = getLocalDict(fixedHead);
+      const longDict = await getLatinDict(fixedHead);
+      console.log(longDict);
       // const longDict = await getPerseusLatin(fixedHead);
-      //console.log(inflect);
       if (inflect === undefined) {
         // as before, if word is not inflected, returns array without inflectArr (numerals, particles, etc.)
-        //console.log("UND");
         return [
           {
             headword: fixedHead,
@@ -121,7 +114,6 @@ const getLatinMorph = async (lemma) => {
 
 const getLatininflectArr = (inflectArr, type) => {
   // returns an array of all possible inflections depending on the type of word given
-  //console.log(inflectArr, type);
   let returnArr = [];
   if (type === "verb") {
     if (Array.isArray(inflectArr)) {
@@ -320,37 +312,50 @@ const getWikiLatin = async (lemma) => {
   return sumDef;
 };
 
-const getLocalDict = (lemma) => {
+const getLatinDict = async (lemma) => {
   // retrieves the correct dictionary entry from the local Latin lexicon file
-  if (!latindict[lemma]) {
-    if (latindict[`${lemma}1`]) {
-      let combined = [];
-      let dictSense = latindict[`${lemma}1`].senses;
-      if (dictSense.length !== undefined && dictSense.length > 0) {
-        for (let i = 0; i < dictSense.length; i++) {
-          let newArr = combined.concat(dictSense[i]);
-          combined = newArr;
-        }
-      }
-      let dictString = combined.join(" ");
-      return dictString;
-    } else {
-      return "Definition Not Found";
-    }
-  } else {
-    let dictObj = latindict[lemma];
-    let dictSense = dictObj.senses;
-    let combined = [];
-    if (dictSense.length !== undefined && dictSense.length > 0) {
-      for (let i = 0; i < dictSense.length; i++) {
-        let newArr = combined.concat(dictSense[i]);
-        combined = newArr;
-      }
-    }
-    let dictString = combined.join(" ");
-
-    return dictString;
+  const dictForm = await axios.post("http://localhost:8004/dict/latin", {
+    data: {
+      headwordList: [[lemma]],
+    },
+  });
+  console.log(dictForm.data[0][0]);
+  let senses = dictForm.data[0][0].senses;
+  let combinedArr = [];
+  for (let i = 0; i < senses.length; i++) {
+    combinedArr.push(senses[i]);
   }
+  let combinedSenseString = combinedArr.join(" ");
+
+  // if (!latindict[lemma]) {
+  //   if (latindict[`${lemma}1`]) {
+  //     let combined = [];
+  //     let dictSense = latindict[`${lemma}1`].senses;
+  //     if (dictSense.length !== undefined && dictSense.length > 0) {
+  //       for (let i = 0; i < dictSense.length; i++) {
+  //         let newArr = combined.concat(dictSense[i]);
+  //         combined = newArr;
+  //       }
+  //     }
+  //     let dictString = combined.join(" ");
+  //     return dictString;
+  //   } else {
+  //     return "Definition Not Found";
+  //   }
+  // } else {
+  //   let dictObj = latindict[lemma];
+  //   let dictSense = dictObj.senses;
+  //   let combined = [];
+  //   if (dictSense.length !== undefined && dictSense.length > 0) {
+  //     for (let i = 0; i < dictSense.length; i++) {
+  //       let newArr = combined.concat(dictSense[i]);
+  //       combined = newArr;
+  //     }
+  //   }
+  //   let dictString = combined.join(" ");
+
+  return combinedSenseString;
+  // }
 };
 
 export default getLatinMorph;

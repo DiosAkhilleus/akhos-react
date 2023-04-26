@@ -25,21 +25,17 @@ function App() {
 
   // const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' }) // media query to determine if the user is on a mobile device, mainly to prevent issues when clicking on the "Show more" tab in the dictionary entries
 
-  useEffect(() => {
-    // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
-    setLoadingBar(true);
+  // useEffect(() => {
+  //   // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
+  // }, [greekArr]);
 
-    getGreekPhrase();
-  }, [greekArr]);
-
-  useEffect(() => {
-    // this works exactly the same as the getGreekPhrase function in the previous hook.
-    setLoadingBar(true);
-    getLatinPhrase();
-  }, [latinArr]);
+  // useEffect(() => {
+  //   // this works exactly the same as the getGreekPhrase function in the previous hook.
+  // }, [latinArr]);
 
   useEffect(() => {
     // if the morphList changes (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
+    console.log(morphList);
     setLoadingBar(false);
     if (language === "la") {
       setDisplayArr(latinArr);
@@ -50,11 +46,6 @@ function App() {
   }, [morphList]);
 
   useEffect(() => {
-    // testing how to update the expanded property correctly
-    console.log(expanded);
-  }, [expanded]);
-
-  useEffect(() => {
     if (loaded === true) {
       setActiveIndex(0);
       setVisible(true);
@@ -63,7 +54,7 @@ function App() {
 
   const getGreekPhrase = async () => {
     let arr = [];
-    if (greekArr !== []) {
+    if (greekArr.length > 0) {
       for (let i = 0; i < greekArr.length; i++) {
         let word = await getGreekMorph(greekArr[i]);
         if (word === undefined) {
@@ -87,7 +78,7 @@ function App() {
 
   const getLatinPhrase = async () => {
     let arr = [];
-    if (latinArr !== []) {
+    if (latinArr.length > 0) {
       for (let i = 0; i < latinArr.length; i++) {
         let word = await getLatinMorph(latinArr[i]);
         if (word === undefined) {
@@ -128,11 +119,11 @@ function App() {
     }
   };
 
-  const handleLang = (e, lang) => {
+  const handleLang = async (e, lang) => {
     // handles user submission of either greek or latin forms
     setLoaded(false);
     setVisible(false);
-    setActiveIndex();
+    setActiveIndex(0);
     let inputPhrase;
     if (lang === "greek") {
       setLanguage("gr");
@@ -147,9 +138,17 @@ function App() {
     for (let i = 0; i < cleanedInputArr.length; i++) {
       cleanedInputArr[i].trim();
     }
-    lang === "latin"
-      ? setLatinArr(cleanedInputArr)
-      : setGreekArr(cleanedInputArr);
+    if (lang === "latin") {
+      setLoadingBar(true);
+      setGreekArr([]);
+      setLatinArr(cleanedInputArr);
+      getLatinPhrase();
+    } else {
+      setLoadingBar(true);
+      setLatinArr([]);
+      setGreekArr(cleanedInputArr);
+      getGreekPhrase();
+    }
     e.preventDefault();
   };
 
