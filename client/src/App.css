@@ -217,6 +217,24 @@ table {
     color:rgb(99, 17, 21);
 }
 
+.page-title {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 32px;
+    color: rgb(152, 19, 46);
+}
+
+.page-subtitle {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 18px;
+    color: rgb(20, 85, 73);
+    margin-bottom: 16px;
+}
+
+.coffee-button {
+    margin-bottom: 8px;
+}
+
+
 @media only screen and (max-width: 600px) {
 
     .MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedSecondary {

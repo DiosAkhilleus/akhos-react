@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const port = 8004;
+const port = 8006;
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -33,15 +33,14 @@ app.post("/dict/:lang/", async (req, res) => {
             `^${headwordList[wordOptionList][word]}\\d?$`,
             "i"
           );
-          subMatchArray.push(
+          matchedKeys.push(
             keyList.filter((val) => {
               return val.match(regexFilter);
             })
           );
         }
-        matchedKeys.push(subMatchArray);
+        // matchedKeys.push(subMatchArray);
       }
-
       for (let wordKeySet in matchedKeys) {
         let subDictionaryList = [];
         for (let wordKey in matchedKeys[wordKeySet]) {
@@ -96,5 +95,5 @@ app.post("/dict/:lang/", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Akhos Server running on port ${port}`);
 });

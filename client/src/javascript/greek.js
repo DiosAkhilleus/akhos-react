@@ -16,7 +16,7 @@ const getGreekMorph = async (lemma) => {
     const body = dataOut.RDF.Annotation.Body;
     //console.log(dataOut);
     if (body === undefined) {
-      throw new Error("New Exception");
+      throw new Error("Can't Find Word");
     }
     let type;
     let returnArr = [];
@@ -34,10 +34,7 @@ const getGreekMorph = async (lemma) => {
         let fixedHead = headWord.replace(/[1-9]/g, "");
         const inflect = getGreekInflections(inflections, type);
         const shortDict = await getWikiGreek(fixedHead);
-        const longDict = getLocalDict(fixedHead);
-        //const longDict = await getPerseusGreek(fixedHead);
-
-        //console.log(shortDict);
+        const longDict = getLocalDict(headWord);
 
         if (inflect === undefined) {
           // iff word is not inflected, returns array without inflections (numerals, particles, etc.)
@@ -81,7 +78,6 @@ const getGreekMorph = async (lemma) => {
       const inflect = getGreekInflections(inflections, type);
       const shortDict = await getWikiGreek(fixedHead);
       const longDict = await getGreekDict(fixedHead);
-      //const longDict = await getPerseusGreek(fixedHead);
 
       if (inflect === undefined) {
         // as before, if word is not inflected, returns array without inflections (numerals, particles, etc.)
@@ -471,7 +467,7 @@ const getWikiGreek = async (lemma) => {
 
 const getGreekDict = async (lemma) => {
   // retrieves dictionary information from the local Greek lexicon file
-  const dictForm = await axios.post("http://localhost:8004/dict/greek", {
+  const dictForm = await axios.post("http://localhost:8006/dict/greek", {
     data: {
       headwordList: [[lemma]],
     },

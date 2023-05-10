@@ -314,7 +314,8 @@ const getWikiLatin = async (lemma) => {
 
 const getLatinDict = async (lemma) => {
   // retrieves the correct dictionary entry from the local Latin lexicon file
-  const dictForm = await axios.post("http://localhost:8004/dict/latin", {
+  console.log(lemma);
+  const dictForm = await axios.post("http://localhost:8006/dict/latin", {
     data: {
       headwordList: [[lemma]],
     },

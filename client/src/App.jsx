@@ -25,18 +25,26 @@ function App() {
 
   // const isMobile = useMediaQuery({ query: '(max-device-width:  800px)' }) // media query to determine if the user is on a mobile device, mainly to prevent issues when clicking on the "Show more" tab in the dictionary entries
 
-  // useEffect(() => {
-  //   // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
-  // }, [greekArr]);
+  useEffect(() => {
+    // whenever the user updates the greek array by inputting some string of greek text, this function retrieves the morphology information for all words in the array.
+    if (greekArr.length > 0) {
+      getGreekPhrase();
+    }
+  }, [greekArr]);
 
-  // useEffect(() => {
-  //   // this works exactly the same as the getGreekPhrase function in the previous hook.
-  // }, [latinArr]);
+  useEffect(() => {
+    // this works exactly the same as the getGreekPhrase function in the previous hook.
+    if (latinArr.length > 0) {
+      getLatinPhrase();
+    }
+  }, [latinArr]);
 
   useEffect(() => {
     // if the morphList changes (the full list of morphology items for the user's input string), it sets the display array to be either Greek or Latin depending on what the user input.
-    console.log(morphList);
-    setLoadingBar(false);
+    console.log("morphlist: ", morphList);
+    if (morphList.length > 0) {
+      setLoadingBar(false);
+    }
     if (language === "la") {
       setDisplayArr(latinArr);
     }
@@ -53,6 +61,7 @@ function App() {
   }, [loaded]);
 
   const getGreekPhrase = async () => {
+    console.log("getting greek");
     let arr = [];
     if (greekArr.length > 0) {
       for (let i = 0; i < greekArr.length; i++) {
@@ -63,6 +72,7 @@ function App() {
           arr.push(word);
         }
       }
+      console.log(arr);
       setMorphList(arr);
       setLoaded(true);
     } else if (greekArr.length === 1) {
@@ -77,10 +87,15 @@ function App() {
   };
 
   const getLatinPhrase = async () => {
+    console.log("getting latin");
     let arr = [];
+    console.log(latinArr);
     if (latinArr.length > 0) {
+      console.log(latinArr);
+
       for (let i = 0; i < latinArr.length; i++) {
         let word = await getLatinMorph(latinArr[i]);
+        console.log(word);
         if (word === undefined) {
           arr.push("Error: Undefined Word");
         } else {
@@ -91,6 +106,7 @@ function App() {
       setLoaded(true);
     } else if (latinArr.length === 1) {
       let latWord = await getLatinMorph(latinArr[0]);
+      console.log(latWord);
       if (latWord === undefined) {
         setMorphList("Error: Undefined Word");
       } else {
@@ -138,22 +154,47 @@ function App() {
     for (let i = 0; i < cleanedInputArr.length; i++) {
       cleanedInputArr[i].trim();
     }
+    console.log(cleanedInputArr);
+    setMorphList([]);
     if (lang === "latin") {
+      console.log("latin");
       setLoadingBar(true);
       setGreekArr([]);
       setLatinArr(cleanedInputArr);
-      getLatinPhrase();
     } else {
+      console.log("greek");
       setLoadingBar(true);
       setLatinArr([]);
       setGreekArr(cleanedInputArr);
-      getGreekPhrase();
     }
     e.preventDefault();
   };
 
   return (
     <div>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <div className="page-title">Akhos</div>
+        <div className="page-subtitle">A Classical Studies Morphology Tool</div>
+        <a
+          href="https://www.buymeacoffee.com/andrewbertin"
+          target="_blank"
+          className="coffee-button"
+        >
+          <img
+            src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png"
+            alt="Buy Me A Coffee"
+            style={{ height: 50, width: 217 * (5 / 6) }}
+          />
+        </a>
+      </div>
       <div id="form-container">
         <form
           className="lang-form"
