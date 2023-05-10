@@ -18,7 +18,7 @@ function App() {
 
   const [visible, setVisible] = useState(false); // determines whether or not a morph is visible on the screen during mouseEnter and before mouseLeave
   const [loaded, setLoaded] = useState(false); // changes to true once the morphList for a given input phrase by the user has been properly returned
-  const [loadingBar, setLoadingBar] = useState(true); // the status of whether or not the loading bar is visible... only appears when a phrase is loading
+  const [loadingBar, setLoadingBar] = useState(false); // the status of whether or not the loading bar is visible... only appears when a phrase is loading
   const [expanded, setExpanded] = useState(false); // whether or not the dictionary entry is in its expanded form
 
   const [activeIndex, setActiveIndex] = useState(); // the index of the currently active morph (so in 'cogito ergo sum', if 'ergo' were active this value would be '1')
