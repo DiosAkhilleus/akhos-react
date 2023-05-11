@@ -172,7 +172,7 @@ const Morphology = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingTop: 60 }}>
       <div
         style={{
           width: "100%",
