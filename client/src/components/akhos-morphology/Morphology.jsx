@@ -181,21 +181,7 @@ const Morphology = () => {
           flexDirection: "column",
           alignItems: "center",
         }}
-      >
-        <div className="page-title">Akhos</div>
-        <div className="page-subtitle">A Classical Studies Morphology Tool</div>
-        <a
-          href="https://www.buymeacoffee.com/andrewbertin"
-          target="_blank"
-          className="coffee-button"
-        >
-          <img
-            src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png"
-            alt="Buy Me A Coffee"
-            style={{ height: 50, width: 217 * (5 / 6) }}
-          />
-        </a>
-      </div>
+      ></div>
       <div id="form-container">
         <form
           className="lang-form"
